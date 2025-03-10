@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.DropSett" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/ds_primary</item>
+        <item name="colorPrimaryDark">@color/ds_primary_dark</item>
+        <item name="colorAccent">@color/ds_secondary</item>
+        <item name="android:colorBackground">@color/ds_background</item>
+        <item name="colorSurface">@color/ds_surface</item>
+        <item name="colorOnSurface">@color/ds_on_surface</item>
+        <item name="colorError">@color/ds_error</item>
+        <item name="android:windowBackground">@color/ds_background</item>
+    </style>
+</resources>
