@@ -1,8 +1,8 @@
-package com.maciejkoenig.dropsett;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.dropsett.app.ui;
 
 import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import com.dropsett.app.R;
 
 public class MainActivity extends AppCompatActivity {
 
