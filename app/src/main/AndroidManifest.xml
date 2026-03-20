@@ -8,7 +8,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.DropSett">
-
+        <activity android:name=".ui.ExerciseListActivity"/>
+        <activity android:name=".ui.PlanListActivity"/>
+        <activity android:name=".ui.PlanBuilderActivity"/>
+        <activity android:name=".ui.PlanDetailActivity"/>
         <activity
             android:name=".ui.MainActivity"
             android:exported="true">
