@@ -12,6 +12,7 @@
         <activity android:name=".ui.PlanListActivity"/>
         <activity android:name=".ui.PlanBuilderActivity"/>
         <activity android:name=".ui.PlanDetailActivity"/>
+        <activity android:name=".ui.WorkoutActivity"/>
         <activity
             android:name=".ui.MainActivity"
             android:exported="true">

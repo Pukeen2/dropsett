@@ -18,6 +18,15 @@
         android:layout_marginBottom="48dp"/>
 
     <Button
+        android:id="@+id/btnStartWorkout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Workout"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/ds_primary"
+        android:textColor="@color/ds_on_primary"/>
+
+    <Button
         android:id="@+id/btnExercises"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

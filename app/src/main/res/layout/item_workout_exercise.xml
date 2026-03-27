@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:layout_marginBottom="8dp"
+    android:background="@color/ds_surface">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <TextView
+            android:id="@+id/tvExerciseName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"/>
+
+        <Button
+            android:id="@+id/btnRemoveExercise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Remove"
+            android:textSize="12sp"
+            android:backgroundTint="@color/ds_error"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="4dp">
+
+        <TextView
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+            android:text="Set"
+            android:textSize="11sp"
+            android:textColor="@color/ds_secondary"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="kg"
+            android:textSize="11sp"
+            android:textColor="@color/ds_secondary"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="reps"
+            android:textSize="11sp"
+            android:textColor="@color/ds_secondary"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="RPE"
+            android:textSize="11sp"
+            android:textColor="@color/ds_secondary"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:text="fail"
+            android:textSize="11sp"
+            android:textColor="@color/ds_secondary"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/setsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"/>
+
+    <Button
+        android:id="@+id/btnAddSet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+ Add Set"
+        android:textSize="12sp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/ds_primary"
+        android:textColor="@color/ds_on_primary"/>
+
+</LinearLayout>

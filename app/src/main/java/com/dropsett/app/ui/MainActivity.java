@@ -15,8 +15,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Button btnStartWorkout = findViewById(R.id.btnStartWorkout);
         Button btnExercises = findViewById(R.id.btnExercises);
         Button btnPlans = findViewById(R.id.btnPlans);
+
+        btnStartWorkout.setOnClickListener(v ->
+                startActivity(new Intent(this, WorkoutActivity.class)));
 
         btnExercises.setOnClickListener(v ->
                 startActivity(new Intent(this, ExerciseListActivity.class)));

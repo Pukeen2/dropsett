@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_marginBottom="4dp">
+
+    <TextView
+        android:id="@+id/tvSetNumber"
+        android:layout_width="32dp"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/ds_secondary"
+        android:gravity="center"/>
+
+    <EditText
+        android:id="@+id/etWeight"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:inputType="numberDecimal"
+        android:hint="0"
+        android:textColor="?attr/colorOnSurface"
+        android:textColorHint="@color/ds_secondary"
+        android:gravity="center"
+        android:padding="6dp"
+        android:background="@android:color/transparent"/>
+
+    <EditText
+        android:id="@+id/etReps"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:inputType="number"
+        android:hint="0"
+        android:textColor="?attr/colorOnSurface"
+        android:textColorHint="@color/ds_secondary"
+        android:gravity="center"
+        android:padding="6dp"
+        android:background="@android:color/transparent"/>
+
+    <EditText
+        android:id="@+id/etRpe"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:inputType="number"
+        android:hint="0"
+        android:textColor="?attr/colorOnSurface"
+        android:textColorHint="@color/ds_secondary"
+        android:gravity="center"
+        android:padding="6dp"
+        android:background="@android:color/transparent"/>
+
+    <CheckBox
+        android:id="@+id/cbFailure"
+        android:layout_width="48dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"/>
+
+</LinearLayout>
