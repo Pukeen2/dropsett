@@ -41,13 +41,31 @@
         android:padding="8dp"
         android:clipToPadding="false"/>
 
-    <Button
-        android:id="@+id/btnAddExercise"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="+ Add Exercise"
-        android:backgroundTint="@color/ds_primary"
-        android:textColor="@color/ds_on_primary"
-        android:layout_margin="12dp"/>
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <Button
+            android:id="@+id/btnRestTimer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Rest Timer"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/ds_primary_dark"
+            android:textColor="@color/ds_on_primary"/>
+
+        <Button
+            android:id="@+id/btnAddExercise"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="+ Add Exercise"
+            android:backgroundTint="@color/ds_primary"
+            android:textColor="@color/ds_on_primary"/>
+
+    </LinearLayout>
 
 </LinearLayout>

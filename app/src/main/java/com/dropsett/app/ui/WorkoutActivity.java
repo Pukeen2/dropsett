@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,8 +25,8 @@ import com.dropsett.app.ui.adapter.ExerciseAdapter;
 import com.dropsett.app.ui.adapter.WorkoutExerciseAdapter;
 import com.dropsett.app.util.AppExecutors;
 import com.dropsett.app.util.DateUtil;
+import com.dropsett.app.util.RestTimerManager;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class WorkoutActivity extends AppCompatActivity {
@@ -35,16 +36,17 @@ public class WorkoutActivity extends AppCompatActivity {
 
     private AppDatabase db;
     private WorkoutExerciseAdapter workoutAdapter;
+    private RestTimerManager restTimerManager;
 
-    // session state
     private Long planId = null;
     private Integer planDayId = null;
     private long startTimeMillis;
     private long elapsedSeconds = 0;
 
-    // timer
     private final Handler timerHandler = new Handler(Looper.getMainLooper());
     private TextView tvTimer;
+    private Button btnRestTimer;
+
     private final Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
@@ -60,6 +62,7 @@ public class WorkoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_workout);
 
         db = AppDatabase.getInstance(this);
+        restTimerManager = new RestTimerManager();
 
         if (getIntent().hasExtra(EXTRA_PLAN_ID)) {
             planId = getIntent().getLongExtra(EXTRA_PLAN_ID, -1);
@@ -83,10 +86,84 @@ public class WorkoutActivity extends AppCompatActivity {
         Button btnFinish = findViewById(R.id.btnFinishWorkout);
         btnFinish.setOnClickListener(v -> showFinishDialog());
 
+        btnRestTimer = findViewById(R.id.btnRestTimer);
+        btnRestTimer.setOnClickListener(v -> showRestTimerDialog());
+
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Workout");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    private void showRestTimerDialog() {
+        // if timer already running, show cancel option instead
+        if (restTimerManager.isRunning()) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Rest Timer Running")
+                    .setMessage("Cancel the current rest timer?")
+                    .setPositiveButton("Cancel Timer", (d, w) -> {
+                        restTimerManager.cancel();
+                        btnRestTimer.setText("Rest Timer");
+                    })
+                    .setNegativeButton("Keep Running", null)
+                    .show();
+            return;
+        }
+
+        View dialogView = LayoutInflater.from(this)
+                .inflate(R.layout.dialog_rest_timer, null);
+
+        NumberPicker minutePicker = dialogView.findViewById(R.id.minutePicker);
+        NumberPicker secondPicker = dialogView.findViewById(R.id.secondPicker);
+        TextView tvCountdown = dialogView.findViewById(R.id.tvCountdown);
+
+        minutePicker.setMinValue(0);
+        minutePicker.setMaxValue(10);
+        minutePicker.setValue(2);
+
+        secondPicker.setMinValue(0);
+        secondPicker.setMaxValue(59);
+        secondPicker.setValue(0);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Rest Timer")
+                .setView(dialogView)
+                .setPositiveButton("Start", (d, w) -> {
+                    long totalSeconds = (minutePicker.getValue() * 60L)
+                            + secondPicker.getValue();
+                    if (totalSeconds == 0) return;
+                    startRestTimer(totalSeconds);
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+
+        dialog.show();
+    }
+
+    private void startRestTimer(long seconds) {
+        btnRestTimer.setText(formatDuration(seconds));
+
+        restTimerManager.start(seconds, new RestTimerManager.TimerListener() {
+            @Override
+            public void onTick(long secondsRemaining) {
+                btnRestTimer.setText(formatDuration(secondsRemaining));
+            }
+
+            @Override
+            public void onFinish() {
+                btnRestTimer.setText("Rest Timer");
+                showTimerFinishedDialog();
+            }
+        });
+    }
+
+    private void showTimerFinishedDialog() {
+        if (isFinishing() || isDestroyed()) return;
+        new AlertDialog.Builder(this)
+                .setTitle("Rest Over!")
+                .setMessage("Time to get back to it.")
+                .setPositiveButton("OK", null)
+                .show();
     }
 
     private void showExercisePicker() {
@@ -125,6 +202,7 @@ public class WorkoutActivity extends AppCompatActivity {
 
     private void saveWorkout() {
         timerHandler.removeCallbacks(timerRunnable);
+        restTimerManager.cancel();
 
         List<WorkoutExerciseAdapter.WorkoutExerciseItem> items =
                 workoutAdapter.getExerciseItems();
@@ -174,6 +252,7 @@ public class WorkoutActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         timerHandler.removeCallbacks(timerRunnable);
+        restTimerManager.cancel();
     }
 
     @Override
