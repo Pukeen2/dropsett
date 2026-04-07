@@ -23,6 +23,9 @@ public interface SessionDao {
     @Insert
     void insertSet(ExerciseSet set);
 
+    @Query("SELECT * FROM workout_sessions WHERE id = :sessionId")
+    WorkoutSession getSessionById(long sessionId);
+
     @Query("SELECT * FROM workout_sessions ORDER BY date DESC")
     LiveData<List<WorkoutSession>> getAllSessions();
 

@@ -10,6 +10,9 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Context;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -159,6 +162,17 @@ public class WorkoutActivity extends AppCompatActivity {
 
     private void showTimerFinishedDialog() {
         if (isFinishing() || isDestroyed()) return;
+
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator != null && vibrator.hasVibrator()) {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createOneShot(
+                        500, VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                vibrator.vibrate(500);
+            }
+        }
+
         new AlertDialog.Builder(this)
                 .setTitle("Rest Over!")
                 .setMessage("Time to get back to it.")

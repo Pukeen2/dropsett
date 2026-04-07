@@ -27,5 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
         btnPlans.setOnClickListener(v ->
                 startActivity(new Intent(this, PlanListActivity.class)));
+        Button btnHistory = findViewById(R.id.btnHistory);
+        btnHistory.setOnClickListener(v ->
+                startActivity(new Intent(this, HistoryActivity.class)));
     }
 }

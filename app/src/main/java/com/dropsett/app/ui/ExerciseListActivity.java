@@ -34,6 +34,9 @@ public class ExerciseListActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recyclerExercises);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ExerciseAdapter();
+        adapter.setOnExerciseClickListener(exercise -> {
+            ExerciseHistoryActivity.start(this, exercise.id);
+        });
         recyclerView.setAdapter(adapter);
 
         db.exerciseDao().getAllExercises().observe(this, exercises -> {

@@ -42,5 +42,12 @@
         android:text="Workout Plans"
         android:backgroundTint="@color/ds_primary"
         android:textColor="@color/ds_on_primary"/>
-
+    <Button
+        android:id="@+id/btnHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Workout History"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="@color/ds_primary"
+        android:textColor="@color/ds_on_primary"/>
 </LinearLayout>
