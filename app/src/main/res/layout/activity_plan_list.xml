@@ -13,6 +13,16 @@
         android:padding="8dp"
         android:clipToPadding="false"/>
 
+    <TextView
+        android:id="@+id/tvEmptyPlans"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="No workout plans yet.\nTap + to create one."
+        android:textColor="@color/ds_secondary"
+        android:textSize="16sp"
+        android:visibility="gone"/>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddPlan"
         android:layout_width="wrap_content"

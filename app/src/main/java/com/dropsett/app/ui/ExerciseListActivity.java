@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import com.dropsett.app.R;
 import com.dropsett.app.data.AppDatabase;
 import com.dropsett.app.model.Exercise;
 import com.dropsett.app.ui.adapter.ExerciseAdapter;
+import com.dropsett.app.util.EmptyStateHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.concurrent.Executors;
@@ -38,10 +40,19 @@ public class ExerciseListActivity extends AppCompatActivity {
             ExerciseHistoryActivity.start(this, exercise.id);
         });
         recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(
+                new androidx.recyclerview.widget.DividerItemDecoration(
+                        this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
+                )
+        );
+
+        TextView tvEmpty = findViewById(R.id.tvEmptyExercises);
 
         db.exerciseDao().getAllExercises().observe(this, exercises -> {
             adapter.setExercises(exercises);
+            EmptyStateHelper.observe(recyclerView, tvEmpty, exercises.size());
         });
+
 
         FloatingActionButton fab = findViewById(R.id.fabAddExercise);
         fab.setOnClickListener(v -> showAddExerciseDialog());
@@ -69,7 +80,7 @@ public class ExerciseListActivity extends AppCompatActivity {
                     String notes = etNotes.getText().toString().trim();
 
                     if (name.isEmpty()) {
-                        Toast.makeText(this, "Name is required", Toast.LENGTH_SHORT).show();
+                        etName.setError("Name is required");
                         return;
                     }
 

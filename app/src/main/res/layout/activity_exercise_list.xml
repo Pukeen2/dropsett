@@ -13,6 +13,16 @@
         android:padding="8dp"
         android:clipToPadding="false"/>
 
+    <TextView
+        android:id="@+id/tvEmptyExercises"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="No exercises yet.\nTap + to add your first one."
+        android:textColor="@color/ds_secondary"
+        android:textSize="16sp"
+        android:visibility="gone"/>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddExercise"
         android:layout_width="wrap_content"

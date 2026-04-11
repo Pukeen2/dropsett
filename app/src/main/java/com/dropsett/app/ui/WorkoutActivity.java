@@ -17,6 +17,7 @@ import android.os.Vibrator;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.snackbar.Snackbar;
 
 import com.dropsett.app.R;
 import com.dropsett.app.data.AppDatabase;
@@ -97,6 +98,7 @@ public class WorkoutActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
     }
+
 
     private void showRestTimerDialog() {
         // if timer already running, show cancel option instead
@@ -248,7 +250,11 @@ public class WorkoutActivity extends AppCompatActivity {
             }
 
             runOnUiThread(() -> {
-                Toast.makeText(this, "Workout saved!", Toast.LENGTH_SHORT).show();
+                Snackbar.make(
+                        findViewById(android.R.id.content),
+                        "Workout saved!",
+                        Snackbar.LENGTH_SHORT
+                ).show();
                 finish();
             });
         });
@@ -271,7 +277,20 @@ public class WorkoutActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        finish();
+        onBackPressed();
         return true;
+    }
+    @Override
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Leave Workout?")
+                .setMessage("Your workout will not be saved.")
+                .setPositiveButton("Leave", (d, w) -> {
+                    timerHandler.removeCallbacks(timerRunnable);
+                    restTimerManager.cancel();
+                    finish();
+                })
+                .setNegativeButton("Stay", null)
+                .show();
     }
 }

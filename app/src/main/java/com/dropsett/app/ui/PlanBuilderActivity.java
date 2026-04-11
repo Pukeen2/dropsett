@@ -41,9 +41,13 @@ public class PlanBuilderActivity extends AppCompatActivity {
         btnSave.setOnClickListener(v -> {
             String name = etPlanName.getText().toString().trim();
             if (name.isEmpty()) {
-                Toast.makeText(this, "Please enter a plan name", Toast.LENGTH_SHORT).show();
+                etPlanName.setError("Plan name is required");
+                etPlanName.requestFocus();
                 return;
             }
+
+            btnSave.setEnabled(false);
+            btnSave.setText("Saving...");
 
             Executors.newSingleThreadExecutor().execute(() -> {
                 WorkoutPlan plan = new WorkoutPlan(name, DateUtil.today());

@@ -2,6 +2,7 @@ package com.dropsett.app.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dropsett.app.R;
 import com.dropsett.app.data.AppDatabase;
 import com.dropsett.app.ui.adapter.PlanAdapter;
+import com.dropsett.app.util.EmptyStateHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class PlanListActivity extends AppCompatActivity {
@@ -33,8 +35,11 @@ public class PlanListActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(adapter);
 
+        TextView tvEmpty = findViewById(R.id.tvEmptyPlans);
+
         db.workoutPlanDao().getAllPlans().observe(this, plans -> {
             adapter.setPlans(plans);
+            EmptyStateHelper.observe(recyclerView, tvEmpty, plans.size());
         });
 
         FloatingActionButton fab = findViewById(R.id.fabAddPlan);

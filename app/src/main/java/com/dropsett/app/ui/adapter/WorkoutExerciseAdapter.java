@@ -21,6 +21,7 @@ import com.dropsett.app.util.AppExecutors;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.dropsett.app.util.InputValidator;
 
 public class WorkoutExerciseAdapter
         extends RecyclerView.Adapter<WorkoutExerciseAdapter.ExerciseViewHolder> {
@@ -127,20 +128,34 @@ public class WorkoutExerciseAdapter
             etWeight.setOnFocusChangeListener((v, hasFocus) -> {
                 if (!hasFocus) {
                     String val = etWeight.getText().toString().trim();
+                    if (!InputValidator.isValidWeight(val)) {
+                        etWeight.setError("Invalid weight");
+                        return;
+                    }
                     item.sets.get(setIndex).actualWeight =
                             val.isEmpty() ? 0f : Float.parseFloat(val);
                 }
             });
+
             etReps.setOnFocusChangeListener((v, hasFocus) -> {
                 if (!hasFocus) {
                     String val = etReps.getText().toString().trim();
+                    if (!InputValidator.isValidReps(val)) {
+                        etReps.setError("Invalid reps");
+                        return;
+                    }
                     item.sets.get(setIndex).actualReps =
                             val.isEmpty() ? 0 : Integer.parseInt(val);
                 }
             });
+
             etRpe.setOnFocusChangeListener((v, hasFocus) -> {
                 if (!hasFocus) {
                     String val = etRpe.getText().toString().trim();
+                    if (!InputValidator.isValidRpe(val)) {
+                        etRpe.setError("1–10 only");
+                        return;
+                    }
                     item.sets.get(setIndex).rpe =
                             val.isEmpty() ? 0 : Integer.parseInt(val);
                 }
