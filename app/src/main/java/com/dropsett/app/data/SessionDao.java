@@ -41,6 +41,8 @@ public interface SessionDao {
             "WHERE se.exerciseId = :exerciseId " +
             "ORDER BY ws.date DESC LIMIT 1")
     SessionExercise getLastSessionExercise(long exerciseId);
+    @Query("DELETE FROM workout_sessions WHERE id = :sessionId")
+    void deleteSession(long sessionId);
 
     // Per-exercise history for the history screen
     @Query("SELECT es.* FROM exercise_sets es " +

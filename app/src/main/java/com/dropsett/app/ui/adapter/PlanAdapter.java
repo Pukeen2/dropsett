@@ -19,7 +19,15 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
     public interface OnPlanClickListener {
         void onPlanClick(WorkoutPlan plan);
     }
+    public interface OnPlanDeleteListener {
+        void onPlanDelete(WorkoutPlan plan);
+    }
 
+    private OnPlanDeleteListener deleteListener;
+
+    public void setOnPlanDeleteListener(OnPlanDeleteListener listener) {
+        this.deleteListener = listener;
+    }
     private List<WorkoutPlan> plans = new ArrayList<>();
     private final OnPlanClickListener listener;
 
@@ -46,6 +54,10 @@ public class PlanAdapter extends RecyclerView.Adapter<PlanAdapter.ViewHolder> {
         holder.tvName.setText(plan.name);
         holder.tvDate.setText(plan.createdAt);
         holder.itemView.setOnClickListener(v -> listener.onPlanClick(plan));
+        holder.itemView.setOnLongClickListener(v -> {
+            if (deleteListener != null) deleteListener.onPlanDelete(plan);
+            return true;
+        });
     }
 
     @Override

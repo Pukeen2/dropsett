@@ -21,6 +21,15 @@ public class SessionHistoryAdapter
     public interface OnSessionClickListener {
         void onSessionClick(WorkoutSession session);
     }
+    public interface OnSessionDeleteListener {
+        void onSessionDelete(WorkoutSession session);
+    }
+
+    private OnSessionDeleteListener deleteListener;
+
+    public void setOnSessionDeleteListener(OnSessionDeleteListener listener) {
+        this.deleteListener = listener;
+    }
 
     private List<WorkoutSession> sessions = new ArrayList<>();
     private final com.dropsett.app.data.AppDatabase db;
@@ -51,6 +60,10 @@ public class SessionHistoryAdapter
         holder.tvDate.setText(DateUtil.formatDisplay(session.date));
         holder.tvDuration.setText(formatDuration(session.durationSeconds));
         holder.itemView.setOnClickListener(v -> listener.onSessionClick(session));
+        holder.itemView.setOnLongClickListener(v -> {
+            if (deleteListener != null) deleteListener.onSessionDelete(session);
+            return true;
+        });
     }
 
     private String formatDuration(long seconds) {

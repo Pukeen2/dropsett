@@ -11,6 +11,9 @@ import com.dropsett.app.R;
 import com.dropsett.app.data.AppDatabase;
 import com.dropsett.app.ui.adapter.SessionHistoryAdapter;
 import com.dropsett.app.util.EmptyStateHelper;
+import android.app.AlertDialog;
+import com.dropsett.app.util.AppExecutors;
+import com.dropsett.app.util.DateUtil;
 
 public class HistoryActivity extends AppCompatActivity {
 
@@ -28,6 +31,18 @@ public class HistoryActivity extends AppCompatActivity {
             SessionDetailActivity.start(this, session.id);
         });
         recycler.setAdapter(adapter);
+        adapter.setOnSessionDeleteListener(session -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("Delete Workout")
+                    .setMessage("Delete this workout from " +
+                            DateUtil.formatDisplay(session.date) + "? This cannot be undone.")
+                    .setPositiveButton("Delete", (d, w) -> {
+                        AppExecutors.diskIO().execute(() ->
+                                db.sessionDao().deleteSession(session.id));
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        });
         recycler.addItemDecoration(
                 new androidx.recyclerview.widget.DividerItemDecoration(
                         this, androidx.recyclerview.widget.DividerItemDecoration.VERTICAL

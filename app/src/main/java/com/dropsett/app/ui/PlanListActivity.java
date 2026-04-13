@@ -13,6 +13,8 @@ import com.dropsett.app.data.AppDatabase;
 import com.dropsett.app.ui.adapter.PlanAdapter;
 import com.dropsett.app.util.EmptyStateHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import android.app.AlertDialog;
+import java.util.concurrent.Executors;
 
 public class PlanListActivity extends AppCompatActivity {
 
@@ -34,6 +36,17 @@ public class PlanListActivity extends AppCompatActivity {
             startActivity(intent);
         });
         recyclerView.setAdapter(adapter);
+        adapter.setOnPlanDeleteListener(plan -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("Delete Plan")
+                    .setMessage("Delete \"" + plan.name + "\"? This cannot be undone.")
+                    .setPositiveButton("Delete", (d, w) -> {
+                        Executors.newSingleThreadExecutor().execute(() ->
+                                db.workoutPlanDao().deletePlan(plan));
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        });
 
         TextView tvEmpty = findViewById(R.id.tvEmptyPlans);
 

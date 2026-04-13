@@ -19,6 +19,16 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
     public interface OnExerciseClickListener {
         void onExerciseClick(Exercise exercise);
     }
+    public interface OnExerciseDeleteListener {
+        void onExerciseDelete(Exercise exercise);
+    }
+
+    private OnExerciseDeleteListener deleteListener;
+
+    public void setOnExerciseDeleteListener(OnExerciseDeleteListener listener) {
+        this.deleteListener = listener;
+    }
+
 
     private List<Exercise> exercises = new ArrayList<>();
     private OnExerciseClickListener listener;
@@ -47,6 +57,10 @@ public class ExerciseAdapter extends RecyclerView.Adapter<ExerciseAdapter.ViewHo
         holder.tvMuscle.setText(exercise.muscleGroup != null ? exercise.muscleGroup : "");
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) listener.onExerciseClick(exercise);
+        });
+        holder.itemView.setOnLongClickListener(v -> {
+            if (deleteListener != null) deleteListener.onExerciseDelete(exercise);
+            return true;
         });
     }
 

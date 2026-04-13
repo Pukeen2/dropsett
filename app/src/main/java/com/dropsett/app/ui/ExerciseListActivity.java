@@ -20,6 +20,8 @@ import com.dropsett.app.util.EmptyStateHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.concurrent.Executors;
+import android.app.AlertDialog;
+import java.util.concurrent.Executors;
 
 public class ExerciseListActivity extends AppCompatActivity {
 
@@ -38,6 +40,17 @@ public class ExerciseListActivity extends AppCompatActivity {
         adapter = new ExerciseAdapter();
         adapter.setOnExerciseClickListener(exercise -> {
             ExerciseHistoryActivity.start(this, exercise.id);
+        });
+        adapter.setOnExerciseDeleteListener(exercise -> {
+            new AlertDialog.Builder(this)
+                    .setTitle("Delete Exercise")
+                    .setMessage("Delete \"" + exercise.name + "\"? This cannot be undone.")
+                    .setPositiveButton("Delete", (d, w) -> {
+                        Executors.newSingleThreadExecutor().execute(() ->
+                                db.exerciseDao().delete(exercise));
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
         });
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(
@@ -61,6 +74,7 @@ public class ExerciseListActivity extends AppCompatActivity {
             getSupportActionBar().setTitle("Exercises");
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
     }
 
     private void showAddExerciseDialog() {
