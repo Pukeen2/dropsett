@@ -29,18 +29,15 @@ public class PlanExercise {
     public long planDayId;
     public long exerciseId;
     public int targetSets;
-    public int targetReps;
-    public float targetWeight;  // in kg, 0 if bodyweight
-    public int sortOrder;       // display order within the day
+    public int targetRpe;      // suggested RPE 1-10, 0 if not set
+    public int sortOrder;
 
     public PlanExercise(long planDayId, long exerciseId,
-                        int targetSets, int targetReps,
-                        float targetWeight, int sortOrder) {
+                        int targetSets, int targetRpe, int sortOrder) {
         this.planDayId = planDayId;
         this.exerciseId = exerciseId;
         this.targetSets = targetSets;
-        this.targetReps = targetReps;
-        this.targetWeight = targetWeight;
+        this.targetRpe = targetRpe;
         this.sortOrder = sortOrder;
     }
 }

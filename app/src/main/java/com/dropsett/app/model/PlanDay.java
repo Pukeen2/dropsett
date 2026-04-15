@@ -18,13 +18,13 @@ public class PlanDay {
     @PrimaryKey(autoGenerate = true)
     public long id;
 
-    public long planId;         // which plan this day belongs to
-    public int dayOfWeek;       // 0 = Monday ... 6 = Sunday
-    public String label;        // e.g. "Push Day", "Rest"
+    public long planId;
+    public int dayIndex;   // 0-based order within the plan, no connection to day of week
+    public String label;   // e.g. "Push", "Pull", "Legs"
 
-    public PlanDay(long planId, int dayOfWeek, String label) {
+    public PlanDay(long planId, int dayIndex, String label) {
         this.planId = planId;
-        this.dayOfWeek = dayOfWeek;
+        this.dayIndex = dayIndex;
         this.label = label;
     }
 }

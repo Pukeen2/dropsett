@@ -24,14 +24,20 @@ public interface WorkoutPlanDao {
     @Query("SELECT * FROM workout_plans ORDER BY createdAt DESC")
     LiveData<List<WorkoutPlan>> getAllPlans();
 
+    @Query("SELECT * FROM workout_plans ORDER BY createdAt DESC")
+    List<WorkoutPlan> getAllPlansSync();
+
     @Query("SELECT * FROM workout_plans WHERE id = :id")
     WorkoutPlan getPlanById(long id);
 
     @Insert
     long insertDay(PlanDay day);
 
-    @Query("SELECT * FROM plan_days WHERE planId = :planId ORDER BY dayOfWeek ASC")
+    @Query("SELECT * FROM plan_days WHERE planId = :planId ORDER BY dayIndex ASC")
     List<PlanDay> getDaysForPlan(long planId);
+
+    @Query("SELECT * FROM plan_days WHERE id = :dayId")
+    PlanDay getDayById(long dayId);
 
     @Insert
     long insertPlanExercise(PlanExercise planExercise);
