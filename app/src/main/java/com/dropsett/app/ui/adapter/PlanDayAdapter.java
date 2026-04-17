@@ -10,16 +10,21 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dropsett.app.R;
 import com.dropsett.app.model.PlanDay;
-import com.dropsett.app.util.DateUtil;
 
 import java.util.List;
 
 public class PlanDayAdapter extends RecyclerView.Adapter<PlanDayAdapter.ViewHolder> {
 
-    private final List<PlanDay> days;
+    public interface OnDayClickListener {
+        void onDayClick(PlanDay day);
+    }
 
-    public PlanDayAdapter(List<PlanDay> days) {
+    private final List<PlanDay> days;
+    private final OnDayClickListener listener;
+
+    public PlanDayAdapter(List<PlanDay> days, OnDayClickListener listener) {
         this.days = days;
+        this.listener = listener;
     }
 
     @NonNull
@@ -33,8 +38,11 @@ public class PlanDayAdapter extends RecyclerView.Adapter<PlanDayAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         PlanDay day = days.get(position);
-        holder.tvDayName.setText(DateUtil.DAY_NAMES[day.dayOfWeek]);
+        holder.tvDayName.setText("Day " + (day.dayIndex + 1));
         holder.tvDayLabel.setText(day.label);
+        if (listener != null) {
+            holder.itemView.setOnClickListener(v -> listener.onDayClick(day));
+        }
     }
 
     @Override

@@ -3,28 +3,54 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:padding="12dp"
-    android:gravity="center_vertical">
+    android:layout_marginBottom="12dp"
+    android:background="@color/ds_surface">
 
-    <TextView
-        android:id="@+id/tvDayName"
-        android:layout_width="100dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:textColor="?attr/colorOnSurface"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
 
-    <EditText
-        android:id="@+id/etDayLabel"
-        android:layout_width="0dp"
+        <TextView
+            android:id="@+id/tvDayName"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorOnSurface"/>
+
+        <EditText
+            android:id="@+id/etDayLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Label (e.g. Push)"
+            android:textColor="?attr/colorOnSurface"
+            android:textColorHint="@color/ds_secondary"
+            android:inputType="text"
+            android:padding="8dp"
+            android:background="@android:color/transparent"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dayExercisesContainer"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:hint="Rest"
-        android:textColor="?attr/colorOnSurface"
-        android:textColorHint="@color/ds_secondary"
-        android:inputType="text"
-        android:padding="8dp"
-        android:background="@android:color/transparent"/>
+        android:orientation="vertical"/>
+
+    <Button
+        android:id="@+id/btnAddExerciseToDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+ Add Exercise"
+        android:textSize="12sp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/ds_primary_dark"
+        android:textColor="@color/ds_on_primary"/>
 
 </LinearLayout>

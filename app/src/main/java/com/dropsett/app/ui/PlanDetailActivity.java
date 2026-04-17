@@ -9,13 +9,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dropsett.app.R;
 import com.dropsett.app.data.AppDatabase;
+import com.dropsett.app.model.Exercise;
 import com.dropsett.app.model.PlanDay;
+import com.dropsett.app.model.PlanExercise;
 import com.dropsett.app.model.WorkoutPlan;
-import com.dropsett.app.ui.adapter.PlanDayAdapter;
-import com.dropsett.app.util.DateUtil;
+import com.dropsett.app.ui.adapter.PlanDetailAdapter;
+import com.dropsett.app.util.AppExecutors;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 public class PlanDetailActivity extends AppCompatActivity {
 
@@ -28,17 +30,28 @@ public class PlanDetailActivity extends AppCompatActivity {
         AppDatabase db = AppDatabase.getInstance(this);
 
         TextView tvPlanName = findViewById(R.id.tvPlanName);
-        RecyclerView recyclerDays = findViewById(R.id.recyclerPlanDays);
-        recyclerDays.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView recycler = findViewById(R.id.recyclerPlanDays);
+        recycler.setLayoutManager(new LinearLayoutManager(this));
 
-        Executors.newSingleThreadExecutor().execute(() -> {
+        AppExecutors.diskIO().execute(() -> {
             WorkoutPlan plan = db.workoutPlanDao().getPlanById(planId);
             List<PlanDay> days = db.workoutPlanDao().getDaysForPlan(planId);
 
+            List<PlanDetailAdapter.DayDetailItem> items = new ArrayList<>();
+            for (PlanDay day : days) {
+                List<PlanExercise> planExercises =
+                        db.workoutPlanDao().getExercisesForDay(day.id);
+                List<Exercise> exercises = new ArrayList<>();
+                for (PlanExercise pe : planExercises) {
+                    exercises.add(db.exerciseDao().getById(pe.exerciseId));
+                }
+                items.add(new PlanDetailAdapter.DayDetailItem(day, planExercises, exercises));
+            }
+
             runOnUiThread(() -> {
                 tvPlanName.setText(plan.name);
-                PlanDayAdapter adapter = new PlanDayAdapter(days);
-                recyclerDays.setAdapter(adapter);
+                PlanDetailAdapter adapter = new PlanDetailAdapter(items);
+                recycler.setAdapter(adapter);
             });
         });
 

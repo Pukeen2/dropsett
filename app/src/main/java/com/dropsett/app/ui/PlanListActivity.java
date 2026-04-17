@@ -11,10 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.dropsett.app.R;
 import com.dropsett.app.data.AppDatabase;
 import com.dropsett.app.ui.adapter.PlanAdapter;
-import com.dropsett.app.util.EmptyStateHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import android.app.AlertDialog;
-import java.util.concurrent.Executors;
 
 public class PlanListActivity extends AppCompatActivity {
 
@@ -30,18 +27,20 @@ public class PlanListActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recyclerPlans);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         adapter = new PlanAdapter(plan -> {
             Intent intent = new Intent(this, PlanDetailActivity.class);
             intent.putExtra("planId", plan.id);
             startActivity(intent);
         });
         recyclerView.setAdapter(adapter);
+
         adapter.setOnPlanDeleteListener(plan -> {
-            new AlertDialog.Builder(this)
+            new android.app.AlertDialog.Builder(this)
                     .setTitle("Delete Plan")
                     .setMessage("Delete \"" + plan.name + "\"? This cannot be undone.")
                     .setPositiveButton("Delete", (d, w) -> {
-                        Executors.newSingleThreadExecutor().execute(() ->
+                        java.util.concurrent.Executors.newSingleThreadExecutor().execute(() ->
                                 db.workoutPlanDao().deletePlan(plan));
                     })
                     .setNegativeButton("Cancel", null)
@@ -49,17 +48,14 @@ public class PlanListActivity extends AppCompatActivity {
         });
 
         TextView tvEmpty = findViewById(R.id.tvEmptyPlans);
-
         db.workoutPlanDao().getAllPlans().observe(this, plans -> {
             adapter.setPlans(plans);
-            EmptyStateHelper.observe(recyclerView, tvEmpty, plans.size());
+            com.dropsett.app.util.EmptyStateHelper.observe(recyclerView, tvEmpty, plans.size());
         });
 
         FloatingActionButton fab = findViewById(R.id.fabAddPlan);
-        fab.setOnClickListener(v -> {
-            Intent intent = new Intent(this, PlanBuilderActivity.class);
-            startActivity(intent);
-        });
+        fab.setOnClickListener(v ->
+                startActivity(new Intent(this, PlanBuilderActivity.class)));
 
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Workout Plans");

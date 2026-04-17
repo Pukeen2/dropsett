@@ -37,6 +37,7 @@ public class WorkoutActivity extends AppCompatActivity {
 
     public static final String EXTRA_PLAN_ID = "planId";
     public static final String EXTRA_PLAN_DAY_ID = "planDayId";
+    public static final String EXTRA_PLAN_DAY_INDEX = "planDayIndex";
 
     private AppDatabase db;
     private WorkoutExerciseAdapter workoutAdapter;
@@ -229,8 +230,10 @@ public class WorkoutActivity extends AppCompatActivity {
         }
 
         AppExecutors.diskIO().execute(() -> {
+            int dayIndex = getIntent().getIntExtra(EXTRA_PLAN_DAY_INDEX, 0);
+
             WorkoutSession session = new WorkoutSession(
-                    planId, planDayId,
+                    planId, planDayId, dayIndex,
                     DateUtil.today(),
                     elapsedSeconds,
                     ""

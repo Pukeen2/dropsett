@@ -4,50 +4,207 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:gravity="center"
-    android:padding="32dp"
     android:background="?attr/colorSurface">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textSize="36sp"
-        android:textStyle="bold"
+        android:text="Welcome back!\nWhat are your plans for today?"
+        android:textSize="20sp"
         android:textColor="?attr/colorOnSurface"
-        android:layout_marginBottom="48dp"/>
+        android:padding="24dp"
+        android:lineSpacingMultiplier="1.3"/>
 
-    <Button
-        android:id="@+id/btnStartWorkout"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Start Workout"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/ds_primary"
-        android:textColor="@color/ds_on_primary"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingHorizontal="24dp">
 
-    <Button
-        android:id="@+id/btnExercises"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Exercises"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="@color/ds_primary"
-        android:textColor="@color/ds_on_primary"/>
+        <!-- Free workout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="32dp">
 
-    <Button
-        android:id="@+id/btnPlans"
+            <Button
+                android:id="@+id/btnFreeWorkout"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:text="+"
+                android:textSize="28sp"
+                android:backgroundTint="@color/ds_primary"
+                android:textColor="@color/ds_on_primary"
+                style="@style/Widget.MaterialComponents.Button"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="20dp"
+                android:text="Free Workout\nStart fresh, add exercises as you go"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="15sp"
+                android:lineSpacingMultiplier="1.3"/>
+
+        </LinearLayout>
+
+        <!-- Next plan workout -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="32dp">
+
+            <Button
+                android:id="@+id/btnNextWorkout"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:text="▶"
+                android:textSize="24sp"
+                android:backgroundTint="@color/ds_primary"
+                android:textColor="@color/ds_on_primary"
+                style="@style/Widget.MaterialComponents.Button"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="20dp"
+                android:text="Next Workout\nContinue where you left off"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="15sp"
+                android:lineSpacingMultiplier="1.3"/>
+
+        </LinearLayout>
+
+        <!-- Pick from plan -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <Button
+                android:id="@+id/btnPickWorkout"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:text="☰"
+                android:textSize="24sp"
+                android:backgroundTint="@color/ds_primary"
+                android:textColor="@color/ds_on_primary"
+                style="@style/Widget.MaterialComponents.Button"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="20dp"
+                android:text="Pick from Plan\nChoose a plan and a specific day"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="15sp"
+                android:lineSpacingMultiplier="1.3"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- Footer nav -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Workout Plans"
-        android:backgroundTint="@color/ds_primary"
-        android:textColor="@color/ds_on_primary"/>
-    <Button
-        android:id="@+id/btnHistory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Workout History"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/ds_primary"
-        android:textColor="@color/ds_on_primary"/>
+        android:layout_height="64dp"
+        android:orientation="horizontal"
+        android:background="@color/ds_surface">
+
+        <LinearLayout
+            android:id="@+id/btnNavExercises"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="◆"
+                android:textSize="20sp"
+                android:textColor="@color/ds_secondary"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Exercises"
+                android:textSize="11sp"
+                android:textColor="@color/ds_secondary"
+                android:layout_marginTop="2dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnNavPlans"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="◆"
+                android:textSize="20sp"
+                android:textColor="@color/ds_secondary"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Plans"
+                android:textSize="11sp"
+                android:textColor="@color/ds_secondary"
+                android:layout_marginTop="2dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnNavHistory"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="◆"
+                android:textSize="20sp"
+                android:textColor="@color/ds_secondary"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="History"
+                android:textSize="11sp"
+                android:textColor="@color/ds_secondary"
+                android:layout_marginTop="2dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
 </LinearLayout>

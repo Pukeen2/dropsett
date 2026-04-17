@@ -14,6 +14,7 @@
         <activity android:name=".ui.PlanDetailActivity"/>
         <activity android:name=".ui.WorkoutActivity"/>
         <activity android:name=".ui.HistoryActivity"/>
+        <activity android:name=".ui.PlanPickerActivity"/>
         <activity android:name=".ui.SessionDetailActivity"/>
         <activity android:name=".ui.ExerciseHistoryActivity"/>
         <activity
