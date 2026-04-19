@@ -56,9 +56,19 @@
 
     <CheckBox
         android:id="@+id/cbFailure"
-        android:layout_width="48dp"
+        android:layout_width="40dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/btnRemoveSet"
+        android:layout_width="32dp"
+        android:layout_height="wrap_content"
+        android:text="✕"
+        android:textSize="14sp"
+        android:textColor="@color/ds_error"
+        android:gravity="center"
+        android:clickable="true"
+        android:focusable="true"/>
 
 </LinearLayout>

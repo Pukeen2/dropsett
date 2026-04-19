@@ -2,6 +2,7 @@ package com.dropsett.app.model;
 
 import androidx.room.Entity;
 import androidx.room.ForeignKey;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(
@@ -19,13 +20,17 @@ public class ExerciseSet {
     public long id;
 
     public long sessionExerciseId;
-    public int setIndex;        // 1-based set number within the exercise
+    public int setIndex;
     public int targetReps;
     public float targetWeight;
     public int actualReps;
     public float actualWeight;
-    public int rpe;             // 1–10, 0 if not recorded
+    public int rpe;
     public boolean toFailure;
+
+    // not stored in DB — used at runtime for hint display and hint-to-actual promotion
+    @Ignore public float hintWeight;
+    @Ignore public int hintReps;
 
     public ExerciseSet(long sessionExerciseId, int setIndex,
                        int targetReps, float targetWeight,

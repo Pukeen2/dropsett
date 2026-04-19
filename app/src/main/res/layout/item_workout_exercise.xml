@@ -24,16 +24,20 @@
             android:textStyle="bold"
             android:textColor="?attr/colorOnSurface"/>
 
-        <Button
+        <TextView
             android:id="@+id/btnRemoveExercise"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Remove"
             android:textSize="12sp"
-            android:backgroundTint="@color/ds_error"/>
+            android:textColor="@color/ds_error"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"/>
 
     </LinearLayout>
 
+    <!-- Column headers -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,7 +47,7 @@
         <TextView
             android:layout_width="32dp"
             android:layout_height="wrap_content"
-            android:text="Set"
+            android:text="#"
             android:textSize="11sp"
             android:textColor="@color/ds_secondary"/>
 
@@ -75,12 +79,18 @@
             android:gravity="center"/>
 
         <TextView
-            android:layout_width="48dp"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:text="fail"
             android:textSize="11sp"
             android:textColor="@color/ds_secondary"
             android:gravity="center"/>
+
+        <TextView
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="11sp"/>
 
     </LinearLayout>
 
@@ -90,14 +100,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"/>
 
-    <Button
+    <TextView
         android:id="@+id/btnAddSet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="+ Add Set"
-        android:textSize="12sp"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="@color/ds_primary"
-        android:textColor="@color/ds_on_primary"/>
+        android:textSize="13sp"
+        android:textColor="@color/ds_primary"
+        android:padding="8dp"
+        android:layout_marginTop="4dp"
+        android:clickable="true"
+        android:focusable="true"/>
 
 </LinearLayout>

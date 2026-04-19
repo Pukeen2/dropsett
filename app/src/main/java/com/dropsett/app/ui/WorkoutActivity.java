@@ -1,23 +1,21 @@
 package com.dropsett.app.ui;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.Context;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import com.google.android.material.snackbar.Snackbar;
 
 import com.dropsett.app.R;
 import com.dropsett.app.data.AppDatabase;
@@ -30,8 +28,12 @@ import com.dropsett.app.ui.adapter.WorkoutExerciseAdapter;
 import com.dropsett.app.util.AppExecutors;
 import com.dropsett.app.util.DateUtil;
 import com.dropsett.app.util.RestTimerManager;
+import com.google.android.material.snackbar.Snackbar;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class WorkoutActivity extends AppCompatActivity {
 
@@ -45,19 +47,31 @@ public class WorkoutActivity extends AppCompatActivity {
 
     private Long planId = null;
     private Integer planDayId = null;
+    private int planDayIndex = 0;
     private long startTimeMillis;
     private long elapsedSeconds = 0;
 
     private final Handler timerHandler = new Handler(Looper.getMainLooper());
-    private TextView tvTimer;
-    private Button btnRestTimer;
+    private final Handler clockHandler = new Handler(Looper.getMainLooper());
+    private TextView tvRestTimer;
+    private TextView tvClock;
 
-    private final Runnable timerRunnable = new Runnable() {
+    private final Runnable sessionTimerRunnable = new Runnable() {
         @Override
         public void run() {
             elapsedSeconds = (System.currentTimeMillis() - startTimeMillis) / 1000;
-            tvTimer.setText(formatDuration(elapsedSeconds));
             timerHandler.postDelayed(this, 1000);
+        }
+    };
+
+    private final Runnable clockRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (tvClock != null) {
+                tvClock.setText(new SimpleDateFormat("HH:mm", Locale.getDefault())
+                        .format(new Date()));
+            }
+            clockHandler.postDelayed(this, 30000);
         }
     };
 
@@ -75,41 +89,87 @@ public class WorkoutActivity extends AppCompatActivity {
         if (getIntent().hasExtra(EXTRA_PLAN_DAY_ID)) {
             planDayId = (int) getIntent().getLongExtra(EXTRA_PLAN_DAY_ID, -1);
         }
+        planDayIndex = getIntent().getIntExtra(EXTRA_PLAN_DAY_INDEX, 0);
 
-        tvTimer = findViewById(R.id.tvSessionTimer);
+        setupHeader();
+        setupClock();
+
         startTimeMillis = System.currentTimeMillis();
-        timerHandler.post(timerRunnable);
+        timerHandler.post(sessionTimerRunnable);
 
         RecyclerView recyclerWorkout = findViewById(R.id.recyclerWorkoutExercises);
         recyclerWorkout.setLayoutManager(new LinearLayoutManager(this));
         workoutAdapter = new WorkoutExerciseAdapter(db);
         recyclerWorkout.setAdapter(workoutAdapter);
 
-        Button btnAddExercise = findViewById(R.id.btnAddExercise);
-        btnAddExercise.setOnClickListener(v -> showExercisePicker());
+        // if started from a plan day, preload exercises
+        if (planDayId != null) {
+            preloadPlanExercises();
+        }
 
-        Button btnFinish = findViewById(R.id.btnFinishWorkout);
-        btnFinish.setOnClickListener(v -> showFinishDialog());
+        tvRestTimer = findViewById(R.id.tvRestTimerLabel);
 
-        btnRestTimer = findViewById(R.id.btnRestTimer);
-        btnRestTimer.setOnClickListener(v -> showRestTimerDialog());
+        findViewById(R.id.btnRestTimer).setOnClickListener(v -> showRestTimerDialog());
+        findViewById(R.id.btnFinishWorkout).setOnClickListener(v -> showFinishDialog());
+        findViewById(R.id.btnAddExercise).setOnClickListener(v -> showExercisePicker());
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle("Workout");
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().hide();
         }
     }
 
+    private void setupHeader() {
+        TextView tvWorkoutTitle = findViewById(R.id.tvWorkoutTitle);
+        tvClock = findViewById(R.id.tvWorkoutClock);
+
+        tvClock.setText(new SimpleDateFormat("HH:mm", Locale.getDefault())
+                .format(new Date()));
+
+        if (planId != null && planDayId != null) {
+            AppExecutors.diskIO().execute(() -> {
+                com.dropsett.app.model.WorkoutPlan plan =
+                        db.workoutPlanDao().getPlanById(planId);
+                com.dropsett.app.model.PlanDay day =
+                        db.workoutPlanDao().getDayById(planDayId);
+                runOnUiThread(() -> {
+                    String title = (plan != null ? plan.name : "Workout")
+                            + " — Day " + (planDayIndex + 1)
+                            + (day != null && !day.label.isEmpty()
+                            ? " (" + day.label + ")" : "");
+                    tvWorkoutTitle.setText(title);
+                });
+            });
+        } else {
+            tvWorkoutTitle.setText("Today's Workout");
+        }
+    }
+
+    private void setupClock() {
+        clockHandler.post(clockRunnable);
+    }
+
+    private void preloadPlanExercises() {
+        AppExecutors.diskIO().execute(() -> {
+            List<com.dropsett.app.model.PlanExercise> planExercises =
+                    db.workoutPlanDao().getExercisesForDay(planDayId);
+            for (com.dropsett.app.model.PlanExercise pe : planExercises) {
+                Exercise exercise = db.exerciseDao().getById(pe.exerciseId);
+                if (exercise != null) {
+                    runOnUiThread(() ->
+                            workoutAdapter.addExercise(exercise, pe.targetSets, pe.targetRpe));
+                }
+            }
+        });
+    }
 
     private void showRestTimerDialog() {
-        // if timer already running, show cancel option instead
         if (restTimerManager.isRunning()) {
             new AlertDialog.Builder(this)
                     .setTitle("Rest Timer Running")
                     .setMessage("Cancel the current rest timer?")
                     .setPositiveButton("Cancel Timer", (d, w) -> {
                         restTimerManager.cancel();
-                        btnRestTimer.setText("Rest Timer");
+                        tvRestTimer.setText("Rest");
                     })
                     .setNegativeButton("Keep Running", null)
                     .show();
@@ -121,7 +181,6 @@ public class WorkoutActivity extends AppCompatActivity {
 
         NumberPicker minutePicker = dialogView.findViewById(R.id.minutePicker);
         NumberPicker secondPicker = dialogView.findViewById(R.id.secondPicker);
-        TextView tvCountdown = dialogView.findViewById(R.id.tvCountdown);
 
         minutePicker.setMinValue(0);
         minutePicker.setMaxValue(10);
@@ -131,33 +190,29 @@ public class WorkoutActivity extends AppCompatActivity {
         secondPicker.setMaxValue(59);
         secondPicker.setValue(0);
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setTitle("Rest Timer")
                 .setView(dialogView)
                 .setPositiveButton("Start", (d, w) -> {
-                    long totalSeconds = (minutePicker.getValue() * 60L)
+                    long total = (minutePicker.getValue() * 60L)
                             + secondPicker.getValue();
-                    if (totalSeconds == 0) return;
-                    startRestTimer(totalSeconds);
+                    if (total > 0) startRestTimer(total);
                 })
                 .setNegativeButton("Cancel", null)
-                .create();
-
-        dialog.show();
+                .show();
     }
 
     private void startRestTimer(long seconds) {
-        btnRestTimer.setText(formatDuration(seconds));
-
+        tvRestTimer.setText(formatDuration(seconds));
         restTimerManager.start(seconds, new RestTimerManager.TimerListener() {
             @Override
             public void onTick(long secondsRemaining) {
-                btnRestTimer.setText(formatDuration(secondsRemaining));
+                tvRestTimer.setText(formatDuration(secondsRemaining));
             }
 
             @Override
             public void onFinish() {
-                btnRestTimer.setText("Rest Timer");
+                tvRestTimer.setText("Rest");
                 showTimerFinishedDialog();
             }
         });
@@ -165,7 +220,6 @@ public class WorkoutActivity extends AppCompatActivity {
 
     private void showTimerFinishedDialog() {
         if (isFinishing() || isDestroyed()) return;
-
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         if (vibrator != null && vibrator.hasVibrator()) {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -175,7 +229,6 @@ public class WorkoutActivity extends AppCompatActivity {
                 vibrator.vibrate(500);
             }
         }
-
         new AlertDialog.Builder(this)
                 .setTitle("Rest Over!")
                 .setMessage("Time to get back to it.")
@@ -186,7 +239,6 @@ public class WorkoutActivity extends AppCompatActivity {
     private void showExercisePicker() {
         View dialogView = LayoutInflater.from(this)
                 .inflate(R.layout.dialog_pick_exercise, null);
-
         RecyclerView recycler = dialogView.findViewById(R.id.recyclerPickExercise);
         recycler.setLayoutManager(new LinearLayoutManager(this));
         ExerciseAdapter pickAdapter = new ExerciseAdapter();
@@ -199,12 +251,11 @@ public class WorkoutActivity extends AppCompatActivity {
                 .create();
 
         pickAdapter.setOnExerciseClickListener(exercise -> {
-            workoutAdapter.addExercise(exercise);
+            workoutAdapter.addExercise(exercise, 1, 0);
             dialog.dismiss();
         });
 
         db.exerciseDao().getAllExercises().observe(this, pickAdapter::setExercises);
-
         dialog.show();
     }
 
@@ -218,7 +269,7 @@ public class WorkoutActivity extends AppCompatActivity {
     }
 
     private void saveWorkout() {
-        timerHandler.removeCallbacks(timerRunnable);
+        timerHandler.removeCallbacks(sessionTimerRunnable);
         restTimerManager.cancel();
 
         List<WorkoutExerciseAdapter.WorkoutExerciseItem> items =
@@ -230,34 +281,44 @@ public class WorkoutActivity extends AppCompatActivity {
         }
 
         AppExecutors.diskIO().execute(() -> {
-            int dayIndex = getIntent().getIntExtra(EXTRA_PLAN_DAY_INDEX, 0);
-
             WorkoutSession session = new WorkoutSession(
-                    planId, planDayId, dayIndex,
-                    DateUtil.today(),
-                    elapsedSeconds,
-                    ""
-            );
+                    planId, planDayId, planDayIndex,
+                    DateUtil.today(), elapsedSeconds, "");
             long sessionId = db.sessionDao().insertSession(session);
 
             for (int i = 0; i < items.size(); i++) {
                 WorkoutExerciseAdapter.WorkoutExerciseItem item = items.get(i);
-                SessionExercise se = new SessionExercise(
-                        sessionId, item.exercise.id, i);
+
+                // drop sets that are empty and have no history hint
+                List<ExerciseSet> setsToSave = new java.util.ArrayList<>();
+                for (ExerciseSet set : item.sets) {
+                    boolean hasData = set.actualWeight > 0 || set.actualReps > 0;
+                    boolean hasHint = set.hintWeight > 0 || set.hintReps > 0;
+                    if (hasData) {
+                        setsToSave.add(set);
+                    } else if (hasHint) {
+                        // promote hint to actual value
+                        set.actualWeight = set.hintWeight;
+                        set.actualReps = set.hintReps;
+                        setsToSave.add(set);
+                    }
+                    // else: truly empty with no history — drop it
+                }
+
+                if (setsToSave.isEmpty()) continue;
+
+                SessionExercise se = new SessionExercise(sessionId, item.exercise.id, i);
                 long seId = db.sessionDao().insertSessionExercise(se);
 
-                for (ExerciseSet set : item.sets) {
+                for (ExerciseSet set : setsToSave) {
                     set.sessionExerciseId = seId;
                     db.sessionDao().insertSet(set);
                 }
             }
 
             runOnUiThread(() -> {
-                Snackbar.make(
-                        findViewById(android.R.id.content),
-                        "Workout saved!",
-                        Snackbar.LENGTH_SHORT
-                ).show();
+                Snackbar.make(findViewById(android.R.id.content),
+                        "Workout saved!", Snackbar.LENGTH_SHORT).show();
                 finish();
             });
         });
@@ -272,10 +333,18 @@ public class WorkoutActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        timerHandler.removeCallbacks(timerRunnable);
-        restTimerManager.cancel();
+    public void onBackPressed() {
+        new AlertDialog.Builder(this)
+                .setTitle("Leave Workout?")
+                .setMessage("Your workout will not be saved.")
+                .setPositiveButton("Leave", (d, w) -> {
+                    timerHandler.removeCallbacks(sessionTimerRunnable);
+                    clockHandler.removeCallbacks(clockRunnable);
+                    restTimerManager.cancel();
+                    finish();
+                })
+                .setNegativeButton("Stay", null)
+                .show();
     }
 
     @Override
@@ -283,17 +352,12 @@ public class WorkoutActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
+
     @Override
-    public void onBackPressed() {
-        new AlertDialog.Builder(this)
-                .setTitle("Leave Workout?")
-                .setMessage("Your workout will not be saved.")
-                .setPositiveButton("Leave", (d, w) -> {
-                    timerHandler.removeCallbacks(timerRunnable);
-                    restTimerManager.cancel();
-                    finish();
-                })
-                .setNegativeButton("Stay", null)
-                .show();
+    protected void onDestroy() {
+        super.onDestroy();
+        timerHandler.removeCallbacks(sessionTimerRunnable);
+        clockHandler.removeCallbacks(clockRunnable);
+        restTimerManager.cancel();
     }
 }

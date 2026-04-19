@@ -6,33 +6,37 @@
     android:orientation="vertical"
     android:background="?attr/colorSurface">
 
+    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:padding="12dp">
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp">
 
         <TextView
-            android:id="@+id/tvSessionTimer"
+            android:id="@+id/tvWorkoutTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="00:00"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"/>
+            android:textColor="?attr/colorOnSurface"
+            android:maxLines="1"
+            android:ellipsize="end"/>
 
-        <Button
-            android:id="@+id/btnFinishWorkout"
+        <TextView
+            android:id="@+id/tvWorkoutClock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Finish"
-            android:backgroundTint="@color/ds_primary"
-            android:textColor="@color/ds_on_primary"/>
+            android:textSize="16sp"
+            android:textColor="@color/ds_secondary"
+            android:layout_marginStart="12dp"/>
 
     </LinearLayout>
 
+    <!-- Exercise list -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerWorkoutExercises"
         android:layout_width="match_parent"
@@ -41,30 +45,103 @@
         android:padding="8dp"
         android:clipToPadding="false"/>
 
+    <!-- Footer bar -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="72dp"
         android:orientation="horizontal"
-        android:padding="12dp">
+        android:background="@color/ds_surface">
 
-        <Button
+        <!-- Rest Timer -->
+        <LinearLayout
             android:id="@+id/btnRestTimer"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="Rest Timer"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="@color/ds_primary_dark"
-            android:textColor="@color/ds_on_primary"/>
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground">
 
-        <Button
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="◷"
+                android:textSize="22sp"
+                android:textColor="@color/ds_secondary"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tvRestTimerLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rest"
+                android:textSize="11sp"
+                android:textColor="@color/ds_secondary"
+                android:layout_marginTop="2dp"/>
+
+        </LinearLayout>
+
+        <!-- Finish Workout (larger, centre) -->
+        <LinearLayout
+            android:id="@+id/btnFinishWorkout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1.4"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:text="✓"
+                android:textSize="26sp"
+                android:textColor="@color/ds_primary"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Finish"
+                android:textSize="11sp"
+                android:textColor="@color/ds_primary"
+                android:layout_marginTop="2dp"/>
+
+        </LinearLayout>
+
+        <!-- Add Exercise -->
+        <LinearLayout
             android:id="@+id/btnAddExercise"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="+ Add Exercise"
-            android:backgroundTint="@color/ds_primary"
-            android:textColor="@color/ds_on_primary"/>
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:background="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:text="+"
+                android:textSize="26sp"
+                android:textColor="@color/ds_secondary"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Exercise"
+                android:textSize="11sp"
+                android:textColor="@color/ds_secondary"
+                android:layout_marginTop="2dp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
