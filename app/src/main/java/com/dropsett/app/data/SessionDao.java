@@ -49,6 +49,10 @@ public interface SessionDao {
             "WHERE se.exerciseId = :exerciseId " +
             "ORDER BY ws.date DESC LIMIT 1")
     SessionExercise getLastSessionExercise(long exerciseId);
+    @Query("SELECT ws.* FROM workout_sessions ws " +
+            "INNER JOIN session_exercises se ON se.sessionId = ws.id " +
+            "WHERE se.id = :sessionExerciseId LIMIT 1")
+    WorkoutSession getSessionByExerciseSetId(long sessionExerciseId);
 
     @Query("SELECT es.* FROM exercise_sets es " +
             "INNER JOIN session_exercises se ON es.sessionExerciseId = se.id " +

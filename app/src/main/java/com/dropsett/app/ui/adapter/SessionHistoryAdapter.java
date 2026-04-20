@@ -18,31 +18,38 @@ import java.util.List;
 public class SessionHistoryAdapter
         extends RecyclerView.Adapter<SessionHistoryAdapter.ViewHolder> {
 
+    public static class SessionItem {
+        public WorkoutSession session;
+        public String label;
+
+        public SessionItem(WorkoutSession session, String label) {
+            this.session = session;
+            this.label   = label;
+        }
+    }
+
     public interface OnSessionClickListener {
         void onSessionClick(WorkoutSession session);
     }
+
     public interface OnSessionDeleteListener {
         void onSessionDelete(WorkoutSession session);
     }
 
+    private List<SessionItem> items = new ArrayList<>();
+    private final OnSessionClickListener clickListener;
     private OnSessionDeleteListener deleteListener;
 
-    public void setOnSessionDeleteListener(OnSessionDeleteListener listener) {
-        this.deleteListener = listener;
+    public SessionHistoryAdapter(OnSessionClickListener clickListener) {
+        this.clickListener = clickListener;
     }
 
-    private List<WorkoutSession> sessions = new ArrayList<>();
-    private final com.dropsett.app.data.AppDatabase db;
-    private final OnSessionClickListener listener;
-
-    public SessionHistoryAdapter(com.dropsett.app.data.AppDatabase db,
-                                 OnSessionClickListener listener) {
-        this.db = db;
-        this.listener = listener;
+    public void setOnSessionDeleteListener(OnSessionDeleteListener l) {
+        this.deleteListener = l;
     }
 
-    public void setSessions(List<WorkoutSession> sessions) {
-        this.sessions = sessions;
+    public void setItems(List<SessionItem> items) {
+        this.items = items;
         notifyDataSetChanged();
     }
 
@@ -56,36 +63,28 @@ public class SessionHistoryAdapter
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        WorkoutSession session = sessions.get(position);
-        holder.tvDate.setText(DateUtil.formatDisplay(session.date));
-        holder.tvDuration.setText(formatDuration(session.durationSeconds));
-        holder.itemView.setOnClickListener(v -> listener.onSessionClick(session));
+        SessionItem item = items.get(position);
+        holder.tvLabel.setText(item.label);
+        holder.tvDate.setText(DateUtil.formatDisplay(item.session.date));
+        holder.itemView.setOnClickListener(v -> clickListener.onSessionClick(item.session));
         holder.itemView.setOnLongClickListener(v -> {
-            if (deleteListener != null) deleteListener.onSessionDelete(session);
+            if (deleteListener != null) deleteListener.onSessionDelete(item.session);
             return true;
         });
     }
 
-    private String formatDuration(long seconds) {
-        long h = seconds / 3600;
-        long m = (seconds % 3600) / 60;
-        long s = seconds % 60;
-        if (h > 0) return String.format("%d:%02d:%02d", h, m, s);
-        return String.format("%02d:%02d", m, s);
-    }
-
     @Override
     public int getItemCount() {
-        return sessions.size();
+        return items.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvDate, tvDuration;
+        TextView tvLabel, tvDate;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvDate = itemView.findViewById(R.id.tvSessionDate);
-            tvDuration = itemView.findViewById(R.id.tvSessionDuration);
+            tvLabel = itemView.findViewById(R.id.tvSessionLabel);
+            tvDate  = itemView.findViewById(R.id.tvSessionDate);
         }
     }
 }

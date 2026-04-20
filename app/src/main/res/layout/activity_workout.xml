@@ -15,16 +15,32 @@
         android:paddingHorizontal="16dp"
         android:paddingVertical="12dp">
 
-        <TextView
-            android:id="@+id/tvWorkoutTitle"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface"
-            android:maxLines="1"
-            android:ellipsize="end"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvWorkoutTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorOnSurface"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/tvElapsed"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:textSize="13sp"
+                android:textColor="@color/ds_secondary"
+                android:layout_marginTop="2dp"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvWorkoutClock"
@@ -65,8 +81,8 @@
             android:background="?attr/selectableItemBackground">
 
             <TextView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="◷"
                 android:textSize="22sp"
                 android:textColor="@color/ds_secondary"
@@ -96,10 +112,10 @@
             android:background="?attr/selectableItemBackground">
 
             <TextView
-                android:layout_width="52dp"
-                android:layout_height="52dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="✓"
-                android:textSize="26sp"
+                android:textSize="28sp"
                 android:textColor="@color/ds_primary"
                 android:gravity="center"/>
 
@@ -126,8 +142,8 @@
             android:background="?attr/selectableItemBackground">
 
             <TextView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="+"
                 android:textSize="26sp"
                 android:textColor="@color/ds_secondary"

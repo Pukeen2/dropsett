@@ -13,10 +13,16 @@ import com.dropsett.app.R;
 import com.dropsett.app.data.AppDatabase;
 import com.dropsett.app.model.Exercise;
 import com.dropsett.app.model.ExerciseSet;
+import com.dropsett.app.model.SessionExercise;
+import com.dropsett.app.model.WorkoutSession;
 import com.dropsett.app.ui.adapter.ExerciseHistoryAdapter;
 import com.dropsett.app.util.AppExecutors;
+import com.dropsett.app.util.DateUtil;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ExerciseHistoryActivity extends AppCompatActivity {
 
@@ -36,18 +42,37 @@ public class ExerciseHistoryActivity extends AppCompatActivity {
         long exerciseId = getIntent().getLongExtra(EXTRA_EXERCISE_ID, -1);
         AppDatabase db = AppDatabase.getInstance(this);
 
-        TextView tvExerciseName = findViewById(R.id.tvExerciseHistoryName);
+        TextView tvName = findViewById(R.id.tvExerciseHistoryName);
         RecyclerView recycler = findViewById(R.id.recyclerExerciseHistory);
         recycler.setLayoutManager(new LinearLayoutManager(this));
 
         AppExecutors.diskIO().execute(() -> {
             Exercise exercise = db.exerciseDao().getById(exerciseId);
-            List<ExerciseSet> sets = db.sessionDao().getAllSetsForExercise(exerciseId);
+            List<ExerciseSet> allSets = db.sessionDao().getAllSetsForExercise(exerciseId);
 
+            // group sets by sessionExerciseId, preserving order (most recent first)
+            Map<Long, List<ExerciseSet>> grouped = new LinkedHashMap<>();
+            for (ExerciseSet set : allSets) {
+                grouped.computeIfAbsent(set.sessionExerciseId, k -> new ArrayList<>()).add(set);
+            }
+
+            List<ExerciseHistoryAdapter.SetGroup> groups = new ArrayList<>();
+            for (Map.Entry<Long, List<ExerciseSet>> entry : grouped.entrySet()) {
+                long seId = entry.getKey();
+                String sessionLabel = "Unknown date";
+                WorkoutSession ws = db.sessionDao().getSessionByExerciseSetId(seId);
+                if (ws != null) {
+                    sessionLabel = DateUtil.formatDisplay(ws.date);
+                }
+                groups.add(new ExerciseHistoryAdapter.SetGroup(
+                        seId, sessionLabel, entry.getValue()));
+            }
+
+            final String name = exercise != null ? exercise.name : "Exercise";
+            final List<ExerciseHistoryAdapter.SetGroup> finalGroups = groups;
             runOnUiThread(() -> {
-                tvExerciseName.setText(exercise.name);
-                ExerciseHistoryAdapter adapter = new ExerciseHistoryAdapter(sets);
-                recycler.setAdapter(adapter);
+                tvName.setText(name);
+                recycler.setAdapter(new ExerciseHistoryAdapter(finalGroups));
             });
         });
 

@@ -41,18 +41,33 @@
         android:padding="6dp"
         android:background="@android:color/transparent"/>
 
+    <!-- RPE input shown when not to failure -->
     <EditText
         android:id="@+id/etRpe"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:inputType="number"
-        android:hint="0"
+        android:hint="RPE"
         android:textColor="?attr/colorOnSurface"
         android:textColorHint="@color/ds_secondary"
         android:gravity="center"
         android:padding="6dp"
-        android:background="@android:color/transparent"/>
+        android:background="@android:color/transparent"
+        android:visibility="visible"/>
+
+    <!-- FAIL label shown when to failure — replaces RPE -->
+    <TextView
+        android:id="@+id/tvRpeOrFail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="FAIL"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:textColor="@color/ds_error"
+        android:gravity="center"
+        android:visibility="gone"/>
 
     <CheckBox
         android:id="@+id/cbFailure"
