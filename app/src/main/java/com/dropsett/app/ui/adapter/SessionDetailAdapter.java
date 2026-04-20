@@ -24,7 +24,7 @@ public class SessionDetailAdapter
 
         public DetailItem(Exercise exercise, List<ExerciseSet> sets) {
             this.exercise = exercise;
-            this.sets = sets;
+            this.sets     = sets;
         }
     }
 
@@ -51,25 +51,33 @@ public class SessionDetailAdapter
 
         LayoutInflater inflater = LayoutInflater.from(holder.itemView.getContext());
         for (ExerciseSet set : item.sets) {
-            View setRow = inflater.inflate(
-                    R.layout.item_history_set_row, holder.setsContainer, false);
+            View row = inflater.inflate(
+                    R.layout.item_history_set_row,
+                    holder.setsContainer, false);
 
-            TextView tvSet = setRow.findViewById(R.id.tvHistorySetNumber);
-            TextView tvWeight = setRow.findViewById(R.id.tvHistoryWeight);
-            TextView tvReps = setRow.findViewById(R.id.tvHistoryReps);
-            TextView tvRpe = setRow.findViewById(R.id.tvHistoryRpe);
-            TextView tvFailure = setRow.findViewById(R.id.tvHistoryFailure);
+            TextView tvSet     = row.findViewById(R.id.tvHistorySetNumber);
+            TextView tvWeight  = row.findViewById(R.id.tvHistoryWeight);
+            TextView tvReps    = row.findViewById(R.id.tvHistoryReps);
+            TextView tvRpe     = row.findViewById(R.id.tvHistoryRpe);
+            TextView tvFailure = row.findViewById(R.id.tvHistoryFailure);
 
             tvSet.setText(String.valueOf(set.setIndex));
             tvWeight.setText(set.actualWeight > 0
-                    ? set.actualWeight + "kg" : "-");
+                    ? set.actualWeight + " kg" : "—");
             tvReps.setText(set.actualReps > 0
-                    ? String.valueOf(set.actualReps) : "-");
-            tvRpe.setText(set.rpe > 0
-                    ? "RPE " + set.rpe : "-");
-            tvFailure.setText(set.toFailure ? "FAIL" : "");
+                    ? String.valueOf(set.actualReps) : "—");
 
-            holder.setsContainer.addView(setRow);
+            if (set.toFailure) {
+                tvRpe.setVisibility(View.GONE);
+                tvFailure.setVisibility(View.VISIBLE);
+                tvFailure.setText("FAIL");
+            } else {
+                tvRpe.setVisibility(View.VISIBLE);
+                tvFailure.setVisibility(View.GONE);
+                tvRpe.setText(set.rpe > 0 ? "RPE " + set.rpe : "—");
+            }
+
+            holder.setsContainer.addView(row);
         }
     }
 
@@ -85,7 +93,7 @@ public class SessionDetailAdapter
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvExerciseName = itemView.findViewById(R.id.tvExerciseName);
-            setsContainer = itemView.findViewById(R.id.setsContainer);
+            setsContainer  = itemView.findViewById(R.id.setsContainer);
         }
     }
 }

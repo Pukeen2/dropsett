@@ -19,19 +19,19 @@ public class WorkoutSession {
     public long id;
 
     public Long planId;
-    public Integer planDayId;
-    public int planDayIndex;   // which day index (0-based) this session used
+    public Long planDayId;
+    public int planDayIndex;
     public String date;
     public long durationSeconds;
     public String notes;
 
-    public WorkoutSession(Long planId, Integer planDayId, int planDayIndex,
+    public WorkoutSession(Long planId, Long planDayId, int planDayIndex,
                           String date, long durationSeconds, String notes) {
-        this.planId = planId;
-        this.planDayId = planDayId;
-        this.planDayIndex = planDayIndex;
-        this.date = date;
+        this.planId        = planId;
+        this.planDayId     = planDayId;
+        this.planDayIndex  = planDayIndex;
+        this.date          = date;
         this.durationSeconds = durationSeconds;
-        this.notes = notes;
+        this.notes         = notes;
     }
 }

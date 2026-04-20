@@ -45,9 +45,9 @@ public class WorkoutActivity extends AppCompatActivity {
     private WorkoutExerciseAdapter workoutAdapter;
     private RestTimerManager restTimerManager;
 
-    private Long planId = null;
-    private Long planDayId = null;
-    private int planDayIndex = 0;
+    private Long planId      = null;
+    private Long planDayId   = null;
+    private int  planDayIndex = 0;
     private long startTimeMillis;
     private long elapsedSeconds = 0;
 
@@ -92,6 +92,7 @@ public class WorkoutActivity extends AppCompatActivity {
         }
         if (getIntent().hasExtra(EXTRA_PLAN_DAY_ID)) {
             planDayId = getIntent().getLongExtra(EXTRA_PLAN_DAY_ID, -1);
+            if (planDayId == -1) planDayId = null;
         }
         planDayIndex = getIntent().getIntExtra(EXTRA_PLAN_DAY_INDEX, 0);
 
@@ -272,8 +273,12 @@ public class WorkoutActivity extends AppCompatActivity {
 
         AppExecutors.diskIO().execute(() -> {
             WorkoutSession session = new WorkoutSession(
-                    planId, planDayId != null ? planDayId.intValue() : null,
-                    planDayIndex, DateUtil.today(), elapsedSeconds, "");
+                    planId,
+                    planDayId,
+                    planDayIndex,
+                    DateUtil.today(),
+                    elapsedSeconds,
+                    "");
             long sessionId = db.sessionDao().insertSession(session);
 
             for (int i = 0; i < items.size(); i++) {
@@ -285,12 +290,10 @@ public class WorkoutActivity extends AppCompatActivity {
                     if (hasActual) {
                         setsToSave.add(set);
                     } else if (set.hintWeight > 0 || set.hintReps > 0) {
-                        // promote hint to actual
                         set.actualWeight = set.hintWeight;
                         set.actualReps   = set.hintReps;
                         setsToSave.add(set);
                     }
-                    // truly empty — drop
                 }
 
                 if (setsToSave.isEmpty()) continue;

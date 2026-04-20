@@ -33,21 +33,27 @@
         android:textColor="?attr/colorOnSurface"
         android:gravity="center"/>
 
+    <!-- RPE shown when not to failure -->
     <TextView
         android:id="@+id/tvHistoryRpe"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textSize="13sp"
-        android:textColor="?attr/colorOnSurface"
-        android:gravity="center"/>
+        android:textColor="@color/ds_secondary"
+        android:gravity="center"
+        android:visibility="visible"/>
 
+    <!-- FAIL shown when to failure, replaces RPE slot -->
     <TextView
         android:id="@+id/tvHistoryFailure"
-        android:layout_width="48dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textSize="11sp"
+        android:layout_weight="1"
+        android:textSize="12sp"
+        android:textStyle="bold"
         android:textColor="@color/ds_error"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:visibility="gone"/>
 
 </LinearLayout>

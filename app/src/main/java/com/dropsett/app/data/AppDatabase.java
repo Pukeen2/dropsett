@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
                 SessionExercise.class,
                 ExerciseSet.class
         },
-        version = 2,
+        version = 3,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -53,8 +53,13 @@ public abstract class AppDatabase extends RoomDatabase {
                                 @Override
                                 public void onCreate(@NonNull SupportSQLiteDatabase db) {
                                     super.onCreate(db);
-                                    Executors.newSingleThreadExecutor().execute(() ->
-                                            seedExercises(AppDatabase.getInstance(context)));
+                                    seedAsync(context);
+                                }
+
+                                @Override
+                                public void onDestructiveMigration(@NonNull SupportSQLiteDatabase db) {
+                                    super.onDestructiveMigration(db);
+                                    seedAsync(context);
                                 }
                             })
                             .build();
@@ -64,47 +69,52 @@ public abstract class AppDatabase extends RoomDatabase {
         return INSTANCE;
     }
 
+    private static void seedAsync(Context context) {
+        Executors.newSingleThreadExecutor().execute(() ->
+                seedExercises(AppDatabase.getInstance(context)));
+    }
+
     private static void seedExercises(AppDatabase db) {
         ExerciseDao dao = db.exerciseDao();
 
         // The big 5
-        dao.insert(new Exercise("Bench Press",      "Chest",      ""));
-        dao.insert(new Exercise("Squat",             "Legs",       ""));
-        dao.insert(new Exercise("Deadlift",          "Back",       ""));
-        dao.insert(new Exercise("Barbell Row",       "Back",       ""));
-        dao.insert(new Exercise("Overhead Press",    "Shoulders",  ""));
+        dao.insert(new Exercise("Bench Press",          "Chest",     ""));
+        dao.insert(new Exercise("Squat",                "Legs",      ""));
+        dao.insert(new Exercise("Deadlift",             "Back",      ""));
+        dao.insert(new Exercise("Barbell Row",          "Back",      ""));
+        dao.insert(new Exercise("Overhead Press",       "Shoulders", ""));
 
         // Chest
-        dao.insert(new Exercise("Incline Bench Press",   "Chest",     ""));
-        dao.insert(new Exercise("Cable Fly",             "Chest",     ""));
-        dao.insert(new Exercise("Dumbbell Fly",          "Chest",     ""));
+        dao.insert(new Exercise("Incline Bench Press",  "Chest",     ""));
+        dao.insert(new Exercise("Cable Fly",            "Chest",     ""));
+        dao.insert(new Exercise("Dumbbell Fly",         "Chest",     ""));
 
         // Back
-        dao.insert(new Exercise("Pull Up",               "Back",      ""));
-        dao.insert(new Exercise("Lat Pulldown",          "Back",      ""));
-        dao.insert(new Exercise("Seated Cable Row",      "Back",      ""));
+        dao.insert(new Exercise("Pull Up",              "Back",      ""));
+        dao.insert(new Exercise("Lat Pulldown",         "Back",      ""));
+        dao.insert(new Exercise("Seated Cable Row",     "Back",      ""));
 
         // Legs
-        dao.insert(new Exercise("Romanian Deadlift",     "Legs",      ""));
-        dao.insert(new Exercise("Leg Press",             "Legs",      ""));
-        dao.insert(new Exercise("Leg Curl",              "Legs",      ""));
+        dao.insert(new Exercise("Romanian Deadlift",    "Legs",      ""));
+        dao.insert(new Exercise("Leg Press",            "Legs",      ""));
+        dao.insert(new Exercise("Leg Curl",             "Legs",      ""));
 
         // Shoulders
-        dao.insert(new Exercise("Lateral Raise",         "Shoulders", ""));
-        dao.insert(new Exercise("Face Pull",             "Shoulders", ""));
-        dao.insert(new Exercise("Arnold Press",          "Shoulders", ""));
+        dao.insert(new Exercise("Lateral Raise",        "Shoulders", ""));
+        dao.insert(new Exercise("Face Pull",            "Shoulders", ""));
+        dao.insert(new Exercise("Arnold Press",         "Shoulders", ""));
 
         // Arms
-        dao.insert(new Exercise("Barbell Curl",          "Arms",      ""));
-        dao.insert(new Exercise("Hammer Curl",           "Arms",      ""));
-        dao.insert(new Exercise("Tricep Pushdown",       "Arms",      ""));
-        dao.insert(new Exercise("Skull Crusher",         "Arms",      ""));
-        dao.insert(new Exercise("Overhead Tricep Ext.",  "Arms",      ""));
-        dao.insert(new Exercise("Preacher Curl",         "Arms",      ""));
+        dao.insert(new Exercise("Barbell Curl",         "Arms",      ""));
+        dao.insert(new Exercise("Hammer Curl",          "Arms",      ""));
+        dao.insert(new Exercise("Tricep Pushdown",      "Arms",      ""));
+        dao.insert(new Exercise("Skull Crusher",        "Arms",      ""));
+        dao.insert(new Exercise("Overhead Tricep Ext.", "Arms",      ""));
+        dao.insert(new Exercise("Preacher Curl",        "Arms",      ""));
 
         // Core
-        dao.insert(new Exercise("Plank",                 "Core",      ""));
-        dao.insert(new Exercise("Cable Crunch",          "Core",      ""));
-        dao.insert(new Exercise("Hanging Leg Raise",     "Core",      ""));
+        dao.insert(new Exercise("Plank",                "Core",      ""));
+        dao.insert(new Exercise("Cable Crunch",         "Core",      ""));
+        dao.insert(new Exercise("Hanging Leg Raise",    "Core",      ""));
     }
 }
