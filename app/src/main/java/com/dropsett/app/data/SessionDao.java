@@ -63,4 +63,33 @@ public interface SessionDao {
             "INNER JOIN session_exercises se ON se.sessionId = ws.id " +
             "WHERE se.id = :sessionExerciseId LIMIT 1")
     WorkoutSession getSessionByExerciseSetId(long sessionExerciseId);
+
+    // PR queries
+    @Query("SELECT MAX(actualWeight) FROM exercise_sets es " +
+            "INNER JOIN session_exercises se ON es.sessionExerciseId = se.id " +
+            "WHERE se.exerciseId = :exerciseId")
+    float getBestWeightForExercise(long exerciseId);
+
+    @Query("SELECT MAX(actualReps) FROM exercise_sets es " +
+            "INNER JOIN session_exercises se ON es.sessionExerciseId = se.id " +
+            "WHERE se.exerciseId = :exerciseId " +
+            "AND es.actualWeight >= :atWeight")
+    int getBestRepsAtWeight(long exerciseId, float atWeight);
+
+    @Query("SELECT MAX(actualWeight) FROM exercise_sets es " +
+            "INNER JOIN session_exercises se ON es.sessionExerciseId = se.id " +
+            "WHERE se.exerciseId = :exerciseId " +
+            "AND es.actualReps >= :forReps")
+    float getBestWeightForReps(long exerciseId, int forReps);
+
+    // for finish screen — all sets from a specific session
+    @Query("SELECT es.* FROM exercise_sets es " +
+            "INNER JOIN session_exercises se ON es.sessionExerciseId = se.id " +
+            "WHERE se.sessionId = :sessionId")
+    List<ExerciseSet> getAllSetsForSession(long sessionId);
+
+    // weekly session count for streak
+    @Query("SELECT COUNT(*) FROM workout_sessions " +
+            "WHERE date >= :weekStart")
+    int getSessionCountSince(String weekStart);
 }

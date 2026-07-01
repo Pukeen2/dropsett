@@ -28,7 +28,7 @@ import java.util.concurrent.Executors;
                 SessionExercise.class,
                 ExerciseSet.class
         },
-        version = 3,
+        version = 4,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -57,7 +57,8 @@ public abstract class AppDatabase extends RoomDatabase {
                                 }
 
                                 @Override
-                                public void onDestructiveMigration(@NonNull SupportSQLiteDatabase db) {
+                                public void onDestructiveMigration(
+                                        @NonNull SupportSQLiteDatabase db) {
                                     super.onDestructiveMigration(db);
                                     seedAsync(context);
                                 }
@@ -77,44 +78,301 @@ public abstract class AppDatabase extends RoomDatabase {
     private static void seedExercises(AppDatabase db) {
         ExerciseDao dao = db.exerciseDao();
 
-        // The big 5
-        dao.insert(new Exercise("Bench Press",          "Chest",     ""));
-        dao.insert(new Exercise("Squat",                "Legs",      ""));
-        dao.insert(new Exercise("Deadlift",             "Back",      ""));
-        dao.insert(new Exercise("Barbell Row",          "Back",      ""));
-        dao.insert(new Exercise("Overhead Press",       "Shoulders", ""));
+        // ── CHEST ──────────────────────────────────────────────
+        dao.insert(new Exercise("Bench Press",
+                "Chest", "Triceps, Shoulders",
+                "Push", "Barbell", true, ""));
+        dao.insert(new Exercise("Incline Bench Press",
+                "Chest", "Triceps, Shoulders",
+                "Push", "Barbell", true, ""));
+        dao.insert(new Exercise("Decline Bench Press",
+                "Chest", "Triceps",
+                "Push", "Barbell", true, ""));
+        dao.insert(new Exercise("Dumbbell Bench Press",
+                "Chest", "Triceps, Shoulders",
+                "Push", "Dumbbell", true, ""));
+        dao.insert(new Exercise("Incline Dumbbell Press",
+                "Chest", "Shoulders",
+                "Push", "Dumbbell", true, ""));
+        dao.insert(new Exercise("Dumbbell Fly",
+                "Chest", "",
+                "Push", "Dumbbell", false, ""));
+        dao.insert(new Exercise("Cable Fly",
+                "Chest", "",
+                "Push", "Cable", false, ""));
+        dao.insert(new Exercise("Low Cable Fly",
+                "Chest", "",
+                "Push", "Cable", false, ""));
+        dao.insert(new Exercise("Chest Dip",
+                "Chest", "Triceps",
+                "Push", "Bodyweight", true, "Lean forward to target chest"));
+        dao.insert(new Exercise("Push Up",
+                "Chest", "Triceps, Shoulders",
+                "Push", "Bodyweight", true, ""));
+        dao.insert(new Exercise("Machine Chest Press",
+                "Chest", "Triceps",
+                "Push", "Machine", true, ""));
+        dao.insert(new Exercise("Pec Deck",
+                "Chest", "",
+                "Push", "Machine", false, ""));
 
-        // Chest
-        dao.insert(new Exercise("Incline Bench Press",  "Chest",     ""));
-        dao.insert(new Exercise("Cable Fly",            "Chest",     ""));
-        dao.insert(new Exercise("Dumbbell Fly",         "Chest",     ""));
+        // ── BACK ───────────────────────────────────────────────
+        dao.insert(new Exercise("Deadlift",
+                "Back", "Legs, Glutes",
+                "Hinge", "Barbell", true, ""));
+        dao.insert(new Exercise("Barbell Row",
+                "Back", "Biceps",
+                "Pull", "Barbell", true, ""));
+        dao.insert(new Exercise("Pendlay Row",
+                "Back", "Biceps",
+                "Pull", "Barbell", true, "Dead stop each rep"));
+        dao.insert(new Exercise("Pull Up",
+                "Back", "Biceps",
+                "Pull", "Bodyweight", true, ""));
+        dao.insert(new Exercise("Chin Up",
+                "Back", "Biceps",
+                "Pull", "Bodyweight", true, "Supinated grip"));
+        dao.insert(new Exercise("Lat Pulldown",
+                "Back", "Biceps",
+                "Pull", "Cable", true, ""));
+        dao.insert(new Exercise("Seated Cable Row",
+                "Back", "Biceps",
+                "Pull", "Cable", true, ""));
+        dao.insert(new Exercise("Single Arm Dumbbell Row",
+                "Back", "Biceps",
+                "Pull", "Dumbbell", true, ""));
+        dao.insert(new Exercise("Face Pull",
+                "Back", "Shoulders",
+                "Pull", "Cable", false, "External rotation focus"));
+        dao.insert(new Exercise("Straight Arm Pulldown",
+                "Back", "",
+                "Pull", "Cable", false, ""));
+        dao.insert(new Exercise("Machine Row",
+                "Back", "Biceps",
+                "Pull", "Machine", true, ""));
+        dao.insert(new Exercise("T-Bar Row",
+                "Back", "Biceps",
+                "Pull", "Barbell", true, ""));
 
-        // Back
-        dao.insert(new Exercise("Pull Up",              "Back",      ""));
-        dao.insert(new Exercise("Lat Pulldown",         "Back",      ""));
-        dao.insert(new Exercise("Seated Cable Row",     "Back",      ""));
+        // ── LEGS ───────────────────────────────────────────────
+        dao.insert(new Exercise("Squat",
+                "Legs", "Glutes",
+                "Squat", "Barbell", true, ""));
+        dao.insert(new Exercise("Front Squat",
+                "Legs", "Glutes",
+                "Squat", "Barbell", true, "More quad dominant"));
+        dao.insert(new Exercise("Romanian Deadlift",
+                "Legs", "Glutes",
+                "Hinge", "Barbell", true, ""));
+        dao.insert(new Exercise("Leg Press",
+                "Legs", "Glutes",
+                "Squat", "Machine", true, ""));
+        dao.insert(new Exercise("Hack Squat",
+                "Legs", "",
+                "Squat", "Machine", true, ""));
+        dao.insert(new Exercise("Leg Curl",
+                "Legs", "",
+                "Hinge", "Machine", false, ""));
+        dao.insert(new Exercise("Leg Extension",
+                "Legs", "",
+                "Other", "Machine", false, ""));
+        dao.insert(new Exercise("Bulgarian Split Squat",
+                "Legs", "Glutes",
+                "Squat", "Dumbbell", true, ""));
+        dao.insert(new Exercise("Lunge",
+                "Legs", "Glutes",
+                "Squat", "Dumbbell", true, ""));
+        dao.insert(new Exercise("Walking Lunge",
+                "Legs", "Glutes",
+                "Squat", "Dumbbell", true, ""));
+        dao.insert(new Exercise("Hip Thrust",
+                "Legs", "Glutes",
+                "Hinge", "Barbell", true, ""));
+        dao.insert(new Exercise("Glute Bridge",
+                "Legs", "Glutes",
+                "Hinge", "Bodyweight", false, ""));
+        dao.insert(new Exercise("Calf Raise",
+                "Legs", "",
+                "Other", "Machine", false, ""));
+        dao.insert(new Exercise("Seated Calf Raise",
+                "Legs", "",
+                "Other", "Machine", false, ""));
+        dao.insert(new Exercise("Goblet Squat",
+                "Legs", "Glutes",
+                "Squat", "Kettlebell", true, ""));
 
-        // Legs
-        dao.insert(new Exercise("Romanian Deadlift",    "Legs",      ""));
-        dao.insert(new Exercise("Leg Press",            "Legs",      ""));
-        dao.insert(new Exercise("Leg Curl",             "Legs",      ""));
+        // ── SHOULDERS ──────────────────────────────────────────
+        dao.insert(new Exercise("Overhead Press",
+                "Shoulders", "Triceps",
+                "Push", "Barbell", true, ""));
+        dao.insert(new Exercise("Seated Dumbbell Press",
+                "Shoulders", "Triceps",
+                "Push", "Dumbbell", true, ""));
+        dao.insert(new Exercise("Arnold Press",
+                "Shoulders", "Triceps",
+                "Push", "Dumbbell", true, ""));
+        dao.insert(new Exercise("Lateral Raise",
+                "Shoulders", "",
+                "Other", "Dumbbell", false, ""));
+        dao.insert(new Exercise("Cable Lateral Raise",
+                "Shoulders", "",
+                "Other", "Cable", false, ""));
+        dao.insert(new Exercise("Machine Lateral Raise",
+                "Shoulders", "",
+                "Other", "Machine", false, ""));
+        dao.insert(new Exercise("Rear Delt Fly",
+                "Shoulders", "",
+                "Pull", "Dumbbell", false, ""));
+        dao.insert(new Exercise("Cable Rear Delt Fly",
+                "Shoulders", "",
+                "Pull", "Cable", false, ""));
+        dao.insert(new Exercise("Front Raise",
+                "Shoulders", "",
+                "Push", "Dumbbell", false, ""));
+        dao.insert(new Exercise("Machine Shoulder Press",
+                "Shoulders", "Triceps",
+                "Push", "Machine", true, ""));
+        dao.insert(new Exercise("Band Pull Apart",
+                "Shoulders", "Back",
+                "Pull", "Band", false, ""));
 
-        // Shoulders
-        dao.insert(new Exercise("Lateral Raise",        "Shoulders", ""));
-        dao.insert(new Exercise("Face Pull",            "Shoulders", ""));
-        dao.insert(new Exercise("Arnold Press",         "Shoulders", ""));
+        // ── ARMS — BICEPS ──────────────────────────────────────
+        dao.insert(new Exercise("Barbell Curl",
+                "Arms", "",
+                "Pull", "Barbell", false, ""));
+        dao.insert(new Exercise("EZ Bar Curl",
+                "Arms", "",
+                "Pull", "Barbell", false, ""));
+        dao.insert(new Exercise("Dumbbell Curl",
+                "Arms", "",
+                "Pull", "Dumbbell", false, ""));
+        dao.insert(new Exercise("Hammer Curl",
+                "Arms", "Forearms",
+                "Pull", "Dumbbell", false, ""));
+        dao.insert(new Exercise("Preacher Curl",
+                "Arms", "",
+                "Pull", "Barbell", false, ""));
+        dao.insert(new Exercise("Cable Curl",
+                "Arms", "",
+                "Pull", "Cable", false, ""));
+        dao.insert(new Exercise("Incline Dumbbell Curl",
+                "Arms", "",
+                "Pull", "Dumbbell", false, "Long head stretch"));
+        dao.insert(new Exercise("Concentration Curl",
+                "Arms", "",
+                "Pull", "Dumbbell", false, ""));
 
-        // Arms
-        dao.insert(new Exercise("Barbell Curl",         "Arms",      ""));
-        dao.insert(new Exercise("Hammer Curl",          "Arms",      ""));
-        dao.insert(new Exercise("Tricep Pushdown",      "Arms",      ""));
-        dao.insert(new Exercise("Skull Crusher",        "Arms",      ""));
-        dao.insert(new Exercise("Overhead Tricep Ext.", "Arms",      ""));
-        dao.insert(new Exercise("Preacher Curl",        "Arms",      ""));
+        // ── ARMS — TRICEPS ─────────────────────────────────────
+        dao.insert(new Exercise("Tricep Pushdown",
+                "Arms", "",
+                "Push", "Cable", false, ""));
+        dao.insert(new Exercise("Overhead Tricep Extension",
+                "Arms", "",
+                "Push", "Cable", false, "Long head focus"));
+        dao.insert(new Exercise("Skull Crusher",
+                "Arms", "",
+                "Push", "Barbell", false, ""));
+        dao.insert(new Exercise("Close Grip Bench Press",
+                "Arms", "Chest",
+                "Push", "Barbell", true, ""));
+        dao.insert(new Exercise("Tricep Dip",
+                "Arms", "Chest",
+                "Push", "Bodyweight", true, ""));
+        dao.insert(new Exercise("Diamond Push Up",
+                "Arms", "Chest",
+                "Push", "Bodyweight", false, ""));
+        dao.insert(new Exercise("Kickback",
+                "Arms", "",
+                "Push", "Dumbbell", false, ""));
 
-        // Core
-        dao.insert(new Exercise("Plank",                "Core",      ""));
-        dao.insert(new Exercise("Cable Crunch",         "Core",      ""));
-        dao.insert(new Exercise("Hanging Leg Raise",    "Core",      ""));
+        // ── CORE ───────────────────────────────────────────────
+        dao.insert(new Exercise("Plank",
+                "Core", "",
+                "Core", "Bodyweight", false, ""));
+        dao.insert(new Exercise("Side Plank",
+                "Core", "",
+                "Core", "Bodyweight", false, ""));
+        dao.insert(new Exercise("Cable Crunch",
+                "Core", "",
+                "Core", "Cable", false, ""));
+        dao.insert(new Exercise("Hanging Leg Raise",
+                "Core", "",
+                "Core", "Bodyweight", false, ""));
+        dao.insert(new Exercise("Ab Wheel Rollout",
+                "Core", "",
+                "Core", "Bodyweight", false, ""));
+        dao.insert(new Exercise("Crunch",
+                "Core", "",
+                "Core", "Bodyweight", false, ""));
+        dao.insert(new Exercise("Reverse Crunch",
+                "Core", "",
+                "Core", "Bodyweight", false, ""));
+        dao.insert(new Exercise("Bicycle Crunch",
+                "Core", "",
+                "Core", "Bodyweight", false, ""));
+        dao.insert(new Exercise("Russian Twist",
+                "Core", "",
+                "Core", "Bodyweight", false, ""));
+        dao.insert(new Exercise("Dead Bug",
+                "Core", "",
+                "Core", "Bodyweight", false, ""));
+        dao.insert(new Exercise("Pallof Press",
+                "Core", "",
+                "Core", "Cable", false, "Anti-rotation"));
+        dao.insert(new Exercise("Hollow Body Hold",
+                "Core", "",
+                "Core", "Bodyweight", false, ""));
+
+        // ── FULL BODY / COMPOUND ───────────────────────────────
+        dao.insert(new Exercise("Power Clean",
+                "Back", "Legs, Shoulders",
+                "Hinge", "Barbell", true, ""));
+        dao.insert(new Exercise("Clean and Press",
+                "Shoulders", "Legs, Back",
+                "Push", "Barbell", true, ""));
+        dao.insert(new Exercise("Kettlebell Swing",
+                "Legs", "Back, Core",
+                "Hinge", "Kettlebell", true, ""));
+        dao.insert(new Exercise("Turkish Get Up",
+                "Core", "Shoulders",
+                "Other", "Kettlebell", true, ""));
+        dao.insert(new Exercise("Farmer's Carry",
+                "Core", "Forearms, Traps",
+                "Carry", "Dumbbell", true, ""));
+        dao.insert(new Exercise("Suitcase Carry",
+                "Core", "Forearms",
+                "Carry", "Kettlebell", true, ""));
+        dao.insert(new Exercise("Thruster",
+                "Legs", "Shoulders",
+                "Push", "Barbell", true, ""));
+        dao.insert(new Exercise("Burpee",
+                "Core", "Chest, Legs",
+                "Other", "Bodyweight", true, ""));
+
+        // ── BAND SPECIFIC ──────────────────────────────────────
+        dao.insert(new Exercise("Band Squat",
+                "Legs", "Glutes",
+                "Squat", "Band", true, ""));
+        dao.insert(new Exercise("Band Pull Through",
+                "Legs", "Glutes",
+                "Hinge", "Band", true, ""));
+        dao.insert(new Exercise("Band Row",
+                "Back", "Biceps",
+                "Pull", "Band", true, ""));
+        dao.insert(new Exercise("Band Chest Press",
+                "Chest", "Triceps",
+                "Push", "Band", true, ""));
+        dao.insert(new Exercise("Band Lateral Raise",
+                "Shoulders", "",
+                "Other", "Band", false, ""));
+        dao.insert(new Exercise("Band Curl",
+                "Arms", "",
+                "Pull", "Band", false, ""));
+        dao.insert(new Exercise("Band Tricep Pushdown",
+                "Arms", "",
+                "Push", "Band", false, ""));
+        dao.insert(new Exercise("Band Glute Kickback",
+                "Legs", "Glutes",
+                "Other", "Band", false, ""));
     }
 }
