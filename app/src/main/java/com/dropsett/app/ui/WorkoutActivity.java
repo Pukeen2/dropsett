@@ -1,7 +1,9 @@
 package com.dropsett.app.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.dropsett.app.R;
 import com.dropsett.app.data.AppDatabase;
+import com.dropsett.app.model.Exercise;
 import com.dropsett.app.model.ExerciseSet;
 import com.dropsett.app.model.SessionExercise;
 import com.dropsett.app.model.WorkoutSession;
@@ -40,6 +43,7 @@ public class WorkoutActivity extends AppCompatActivity {
     public static final String EXTRA_PLAN_ID        = "planId";
     public static final String EXTRA_PLAN_DAY_ID    = "planDayId";
     public static final String EXTRA_PLAN_DAY_INDEX = "planDayIndex";
+    private static final int REQUEST_PICK_EXERCISE = 1001;
 
     private AppDatabase db;
     private WorkoutExerciseAdapter workoutAdapter;
@@ -227,26 +231,26 @@ public class WorkoutActivity extends AppCompatActivity {
     }
 
     private void showExercisePicker() {
-        View dialogView = LayoutInflater.from(this)
-                .inflate(R.layout.dialog_pick_exercise, null);
-        RecyclerView recycler = dialogView.findViewById(R.id.recyclerPickExercise);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
-        ExerciseAdapter pickAdapter = new ExerciseAdapter();
-        recycler.setAdapter(pickAdapter);
+        Intent intent = new Intent(this, ExercisePickerActivity.class);
+        startActivityForResult(intent, REQUEST_PICK_EXERCISE);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PICK_EXERCISE
+                && resultCode == Activity.RESULT_OK
+                && data != null) {
+            long exerciseId = data.getLongExtra(
+                    ExercisePickerActivity.EXTRA_EXERCISE_ID, -1);
+            if (exerciseId == -1) return;
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("Pick Exercise")
-                .setView(dialogView)
-                .setNegativeButton("Cancel", null)
-                .create();
-
-        pickAdapter.setOnExerciseClickListener(exercise -> {
-            workoutAdapter.addExercise(exercise, 1, 0);
-            dialog.dismiss();
-        });
-
-        db.exerciseDao().getAllExercises().observe(this, pickAdapter::setExercises);
-        dialog.show();
+            AppExecutors.diskIO().execute(() -> {
+                Exercise exercise = db.exerciseDao().getById(exerciseId);
+                if (exercise != null) {
+                    runOnUiThread(() -> workoutAdapter.addExercise(exercise, 1, 0));
+                }
+            });
+        }
     }
 
     private void showFinishDialog() {

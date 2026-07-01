@@ -43,22 +43,22 @@ public class UserPreferences {
         String profile = getEquipmentProfile();
         switch (profile) {
             case PROFILE_BODYWEIGHT:
-                return Arrays.asList("Bodyweight", "Band");
+                return Arrays.asList("Bodyweight", "Band", "Other");
 
             case PROFILE_HOME_DUMBBELLS:
                 return Arrays.asList("Bodyweight", "Band",
-                        "Dumbbell", "Kettlebell");
+                        "Dumbbell", "Kettlebell", "Other");
 
             case PROFILE_GARAGE:
                 return Arrays.asList("Bodyweight", "Band",
                         "Dumbbell", "Kettlebell",
-                        "Barbell");
+                        "Barbell", "Other");
 
             case PROFILE_FULL_GYM:
             default:
                 return Arrays.asList("Bodyweight", "Band",
                         "Dumbbell", "Kettlebell",
-                        "Barbell", "Cable", "Machine");
+                        "Barbell", "Cable", "Machine", "Other");
         }
     }
 }

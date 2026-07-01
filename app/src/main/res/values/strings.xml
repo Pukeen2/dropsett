@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">DropSett</string>
     <string name="hint_long_press_delete">Long press any item to delete it</string>
+    <string name="welcome_back_nwhat_are_your_plans_for_today">Welcome back!\nWhat are your plans for today?</string>
 </resources>

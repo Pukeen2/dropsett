@@ -6,14 +6,36 @@
     android:orientation="vertical"
     android:background="?attr/colorSurface">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Welcome back!\nWhat are your plans for today?"
-        android:textSize="20sp"
-        android:textColor="?attr/colorOnSurface"
-        android:padding="24dp"
-        android:lineSpacingMultiplier="1.3"/>
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="8dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/welcome_back_nwhat_are_your_plans_for_today"
+            android:textSize="20sp"
+            android:textColor="?attr/colorOnSurface"
+            android:lineSpacingMultiplier="1.3"/>
+
+        <TextView
+            android:id="@+id/btnSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⚙"
+            android:textSize="22sp"
+            android:textColor="@color/ds_secondary"
+            android:padding="8dp"
+            android:clickable="true"
+            android:focusable="true"/>
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

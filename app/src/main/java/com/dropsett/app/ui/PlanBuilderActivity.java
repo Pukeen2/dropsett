@@ -1,6 +1,8 @@
 package com.dropsett.app.ui;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +36,8 @@ public class PlanBuilderActivity extends AppCompatActivity {
     private EditText etPlanName;
     private LinearLayout daysContainer;
     private int dayCount = 3;
+    private static final int REQUEST_PICK_EXERCISE = 1002;
+    private int pickingForDayIndex = -1;
 
     // Each day holds a label and a list of planned exercises
     private final List<DayEntry> dayEntries = new ArrayList<>();
@@ -164,27 +168,43 @@ public class PlanBuilderActivity extends AppCompatActivity {
                                     LinearLayout container,
                                     DayEntry entry,
                                     LayoutInflater inflater) {
-        View dialogView = LayoutInflater.from(this)
-                .inflate(R.layout.dialog_pick_exercise, null);
-        RecyclerView recycler = dialogView.findViewById(R.id.recyclerPickExercise);
-        recycler.setLayoutManager(new LinearLayoutManager(this));
-        ExerciseAdapter adapter = new ExerciseAdapter();
-        recycler.setAdapter(adapter);
+        pickingForDayIndex = dayIndex;
+        startActivityForResult(
+                new Intent(this, ExercisePickerActivity.class),
+                REQUEST_PICK_EXERCISE);
+    }
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setTitle("Add Exercise to Day " + (dayIndex + 1))
-                .setView(dialogView)
-                .setNegativeButton("Cancel", null)
-                .create();
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_PICK_EXERCISE
+                && resultCode == Activity.RESULT_OK
+                && data != null
+                && pickingForDayIndex >= 0) {
 
-        adapter.setOnExerciseClickListener(exercise -> {
-            entry.exercises.add(new ExerciseEntry(exercise));
-            renderDayExercises(container, entry, inflater);
-            dialog.dismiss();
-        });
+            long exerciseId = data.getLongExtra(
+                    ExercisePickerActivity.EXTRA_EXERCISE_ID, -1);
+            if (exerciseId == -1) return;
 
-        db.exerciseDao().getAllExercises().observe(this, adapter::setExercises);
-        dialog.show();
+            AppExecutors.diskIO().execute(() -> {
+                Exercise exercise = db.exerciseDao().getById(exerciseId);
+                if (exercise == null) return;
+
+                runOnUiThread(() -> {
+                    DayEntry entry = dayEntries.get(pickingForDayIndex);
+                    entry.exercises.add(new ExerciseEntry(exercise));
+                    // re-render just this day's exercise list
+                    View dayView = daysContainer.getChildAt(pickingForDayIndex);
+                    if (dayView != null) {
+                        LinearLayout container = dayView.findViewById(
+                                R.id.dayExercisesContainer);
+                        renderDayExercises(container, entry,
+                                LayoutInflater.from(this));
+                    }
+                    pickingForDayIndex = -1;
+                });
+            });
+        }
     }
 
     private void savePlan() {

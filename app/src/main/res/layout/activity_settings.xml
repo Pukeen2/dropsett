@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="?attr/colorSurface"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Where do you usually train?"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="?attr/colorOnSurface"
+        android:layout_marginBottom="8dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This filters the exercise list to show only what's available to you."
+        android:textSize="13sp"
+        android:textColor="@color/ds_secondary"
+        android:layout_marginBottom="24dp"/>
+
+    <RadioGroup
+        android:id="@+id/rgEquipment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/rbBodyweight"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Home — bodyweight and bands only"
+            android:textColor="?attr/colorOnSurface"
+            android:padding="12dp"/>
+
+        <RadioButton
+            android:id="@+id/rbHomeDumbbells"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Home — dumbbells and some equipment"
+            android:textColor="?attr/colorOnSurface"
+            android:padding="12dp"/>
+
+        <RadioButton
+            android:id="@+id/rbGarage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Garage gym — barbell and rack"
+            android:textColor="?attr/colorOnSurface"
+            android:padding="12dp"/>
+
+        <RadioButton
+            android:id="@+id/rbFullGym"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Commercial gym — full access"
+            android:textColor="?attr/colorOnSurface"
+            android:padding="12dp"/>
+
+    </RadioGroup>
+
+</LinearLayout>

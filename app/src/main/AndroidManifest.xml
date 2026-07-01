@@ -17,6 +17,8 @@
         <activity android:name=".ui.PlanPickerActivity"/>
         <activity android:name=".ui.SessionDetailActivity"/>
         <activity android:name=".ui.ExerciseHistoryActivity"/>
+        <activity android:name=".ui.SettingsActivity"/>
+        <activity android:name=".ui.ExercisePickerActivity"/>
         <activity
             android:name=".ui.MainActivity"
             android:exported="true">

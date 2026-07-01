@@ -17,8 +17,10 @@ import com.dropsett.app.data.AppDatabase;
 import com.dropsett.app.model.Exercise;
 import com.dropsett.app.ui.adapter.ExerciseAdapter;
 import com.dropsett.app.util.EmptyStateHelper;
+import com.dropsett.app.util.UserPreferences;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.List;
 import java.util.concurrent.Executors;
 import android.app.AlertDialog;
 import java.util.concurrent.Executors;
@@ -61,11 +63,13 @@ public class ExerciseListActivity extends AppCompatActivity {
 
         TextView tvEmpty = findViewById(R.id.tvEmptyExercises);
 
-        db.exerciseDao().getAllExercises().observe(this, exercises -> {
+        UserPreferences prefs = new UserPreferences(this);
+        List<String> allowed  = prefs.getAllowedEquipmentTypes();
+
+        db.exerciseDao().getExercisesByEquipment(allowed).observe(this, exercises -> {
             adapter.setExercises(exercises);
             EmptyStateHelper.observe(recyclerView, tvEmpty, exercises.size());
         });
-
 
         FloatingActionButton fab = findViewById(R.id.fabAddExercise);
         fab.setOnClickListener(v -> showAddExerciseDialog());
@@ -81,26 +85,32 @@ public class ExerciseListActivity extends AppCompatActivity {
         View dialogView = LayoutInflater.from(this)
                 .inflate(R.layout.dialog_add_exercise, null);
 
-        EditText etName = dialogView.findViewById(R.id.etExerciseName);
-        EditText etMuscle = dialogView.findViewById(R.id.etMuscleGroup);
-        EditText etNotes = dialogView.findViewById(R.id.etNotes);
+        EditText etName    = dialogView.findViewById(R.id.etExerciseName);
+        EditText etMuscle  = dialogView.findViewById(R.id.etMuscleGroup);
+        EditText etNotes   = dialogView.findViewById(R.id.etNotes);
 
         new AlertDialog.Builder(this)
                 .setTitle("Add Exercise")
                 .setView(dialogView)
                 .setPositiveButton("Add", (dialog, which) -> {
-                    String name = etName.getText().toString().trim();
+                    String name   = etName.getText().toString().trim();
                     String muscle = etMuscle.getText().toString().trim();
-                    String notes = etNotes.getText().toString().trim();
+                    String notes  = etNotes.getText().toString().trim();
 
                     if (name.isEmpty()) {
                         etName.setError("Name is required");
                         return;
                     }
 
-                    Executors.newSingleThreadExecutor().execute(() -> {
-                        db.exerciseDao().insert(new Exercise(name, muscle, notes));
-                    });
+                    Executors.newSingleThreadExecutor().execute(() ->
+                            db.exerciseDao().insert(new Exercise(
+                                    name,
+                                    muscle.isEmpty() ? "Other" : muscle,
+                                    "",         // secondaryMuscle
+                                    "Other",    // movementPattern
+                                    "Other",    // equipmentType — user added, unclassified
+                                    false,      // isCompound
+                                    notes)));
                 })
                 .setNegativeButton("Cancel", null)
                 .show();
